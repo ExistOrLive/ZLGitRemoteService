@@ -27,7 +27,8 @@ static NSNotificationName const _Nonnull ZLGetMyEventResult_Notification = @"ZLG
  **/
 - (void) getMyEventsWithpage:(NSUInteger)page
                     per_page:(NSUInteger)per_page
-                serialNumber:(NSString * _Nonnull)serialNumber;
+                serialNumber:(NSString * _Nonnull)serialNumber
+              completeHandle:(void(^ _Nonnull)(ZLOperationResultModel *  _Nonnull)) handle ;
 
 /**
  *  @brief 请求用户的event
@@ -36,7 +37,8 @@ static NSNotificationName const _Nonnull ZLGetMyEventResult_Notification = @"ZLG
 - (void) getEventsForUser:(NSString * _Nonnull) userName
                      page:(NSUInteger)page
                  per_page:(NSUInteger)per_page
-             serialNumber:(NSString * _Nonnull)serialNumber;
+             serialNumber:(NSString * _Nonnull)serialNumber
+           completeHandle:(void(^ _Nonnull)(ZLOperationResultModel *  _Nonnull)) handle;
 
 
 
@@ -47,7 +49,8 @@ static NSNotificationName const _Nonnull ZLGetMyEventResult_Notification = @"ZLG
 - (void)getReceivedEventsForUser:(NSString * _Nonnull)userName
                             page:(NSUInteger)page
                         per_page:(NSUInteger)per_page
-                    serialNumber:(NSString * _Nonnull)serialNumber;
+                    serialNumber:(NSString * _Nonnull)serialNumber
+                  completeHandle:(void(^ _Nonnull)(ZLOperationResultModel *  _Nonnull)) handle;
 
 
 

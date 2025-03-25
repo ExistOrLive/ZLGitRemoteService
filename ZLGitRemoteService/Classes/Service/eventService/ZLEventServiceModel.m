@@ -35,7 +35,8 @@
  **/
 - (void) getMyEventsWithpage:(NSUInteger)page
                     per_page:(NSUInteger)per_page
-                serialNumber:(NSString *)serialNumber {
+                serialNumber:(NSString *)serialNumber
+              completeHandle:(void(^ _Nonnull)(ZLOperationResultModel *  _Nonnull)) handle {
     
     __weak typeof(self) weakSelf = self;
     GithubResponse responseBlock = ^(BOOL result, id _Nullable responseObject, NSString * serialNumber) {
@@ -45,7 +46,7 @@
         repoResultModel.serialNumber = serialNumber;
         repoResultModel.data = responseObject;
         
-        ZLMainThreadDispatch([weakSelf postNotification:ZLGetMyEventResult_Notification withParams:repoResultModel];)
+        ZLMainThreadDispatch(if(handle)handle(repoResultModel);)
     };
     
     NSString * loginName = ZLServiceManager.sharedInstance.viewerServiceModel.currentUserLoginName;
@@ -65,7 +66,8 @@
 - (void) getEventsForUser:(NSString *) userName
                      page:(NSUInteger)page
                  per_page:(NSUInteger)per_page
-             serialNumber:(NSString *)serialNumber {
+             serialNumber:(NSString *)serialNumber
+           completeHandle:(void(^ _Nonnull)(ZLOperationResultModel *  _Nonnull)) handle {
     
     __weak typeof(self) weakSelf = self;
     GithubResponse responseBlock = ^(BOOL result, id _Nullable responseObject, NSString * serialNumber) {
@@ -75,7 +77,7 @@
         repoResultModel.serialNumber = serialNumber;
         repoResultModel.data = responseObject;
         
-        ZLMainThreadDispatch([weakSelf postNotification:ZLGetUserReceivedEventResult_Notification withParams:repoResultModel];)
+        ZLMainThreadDispatch(if(handle)handle(repoResultModel);)
     };
     
     [[ZLGithubHttpClientV2 defaultClient] getEventsForUserWithLogin:userName
@@ -92,7 +94,9 @@
 - (void)getReceivedEventsForUser:(NSString *)userName
                             page:(NSUInteger)page
                         per_page:(NSUInteger)per_page
-                    serialNumber:(NSString *)serialNumber {
+                    serialNumber:(NSString *)serialNumber 
+                  completeHandle:(void(^ _Nonnull)(ZLOperationResultModel *  _Nonnull)) handle;
+{
     
     __weak typeof(self) weakSelf = self;
     GithubResponse responseBlock = ^(BOOL result, id _Nullable responseObject, NSString * serialNumber) {
@@ -102,7 +106,7 @@
         repoResultModel.serialNumber = serialNumber;
         repoResultModel.data = responseObject;
         
-        ZLMainThreadDispatch([weakSelf postNotification:ZLGetUserReceivedEventResult_Notification withParams:repoResultModel];)
+        ZLMainThreadDispatch(if(handle)handle(repoResultModel);)
     };
     
     
