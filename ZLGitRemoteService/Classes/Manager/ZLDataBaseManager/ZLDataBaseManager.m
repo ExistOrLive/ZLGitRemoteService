@@ -8,7 +8,7 @@
 
 #import "ZLDataBaseManager.h"
 #import "ZLDataBaseSql.h"
-#import <FMDB/FMDB.h>
+#import <FMDB/fmdb/FMDB.h>
 #import "ZLGitRemoteService-Swift.h"
 
 

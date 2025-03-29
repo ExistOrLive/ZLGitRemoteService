@@ -164,6 +164,8 @@
 
 
 - (void) getRepoCommitWithFullName:(NSString *) fullName
+                              page:(NSUInteger) page
+                          per_page:(NSUInteger) per_page
                             branch:(NSString * __nullable) branch
                              until:(NSDate *) untilDate
                              since:(NSDate *) sinceDate
@@ -190,8 +192,8 @@
     };
     
     [[ZLGithubHttpClientV2 defaultClient] getCommitsForRepoWithFullName:fullName
-                                                                   page:1
-                                                               per_page:30
+                                                                   page:page
+                                                               per_page:per_page
                                                                     sha:branch
                                                                    path:nil
                                                                  author:nil

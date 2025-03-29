@@ -77,6 +77,8 @@
  **/
 
 - (void) getRepoCommitWithFullName:(NSString * _Nonnull) fullName
+                              page:(NSUInteger) page
+                          per_page:(NSUInteger) per_page
                             branch:(NSString * __nullable) branch
                              until:(NSDate * __nullable) untilDate
                              since:(NSDate * __nullable) sinceDate
