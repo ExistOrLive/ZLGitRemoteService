@@ -70,7 +70,7 @@ query searchItem($after: String, $query: String!, $type: SearchType!) {
         body
         url
         issueState: state
-        labels(first: 5, orderBy: {field: CREATED_AT, direction: DESC}) {
+        labels(first: 5, orderBy: { field: CREATED_AT, direction: DESC }) {
           nodes {
             color
             name
@@ -79,12 +79,12 @@ query searchItem($after: String, $query: String!, $type: SearchType!) {
         author {
           login
           url
-          avatarUrl(size:150)
+          avatarUrl(size: 150)
         }
         repository {
-          owner{
+          owner {
             login
-            avatarUrl(size:150)
+            avatarUrl(size: 150)
           }
           name
           nameWithOwner
@@ -102,12 +102,12 @@ query searchItem($after: String, $query: String!, $type: SearchType!) {
         author {
           login
           url
-          avatarUrl(size:150)
+          avatarUrl(size: 150)
         }
         repository {
-          owner{
+          owner {
             login
-            avatarUrl(size:150)
+            avatarUrl(size: 150)
           }
           name
           nameWithOwner
@@ -121,7 +121,7 @@ query searchItem($after: String, $query: String!, $type: SearchType!) {
       ... on User {
         login
         userName: name
-        avatarUrl(size:150)
+        avatarUrl(size: 150)
         bio
         viewerIsFollowing
         url
@@ -129,7 +129,7 @@ query searchItem($after: String, $query: String!, $type: SearchType!) {
       ... on Organization {
         login
         orgName: name
-        avatarUrl(size:150)
+        avatarUrl(size: 150)
         url
         description
       }
@@ -141,7 +141,7 @@ query searchItem($after: String, $query: String!, $type: SearchType!) {
         owner {
           login
           url
-          avatarUrl(size:150)
+          avatarUrl(size: 150)
         }
         description
         stargazerCount
@@ -153,28 +153,29 @@ query searchItem($after: String, $query: String!, $type: SearchType!) {
         isPrivate
       }
       ... on Discussion {
-        
+        number
         author {
           login
-          url 
-          avatarUrl(size:150)
+          url
+          avatarUrl(size: 150)
         }
         repository {
           nameWithOwner
-          name 
-          url 
+          name
+          url
           owner {
             login
-            url 
-            avatarUrl(size:150)
+            url
+            avatarUrl(size: 150)
           }
         }
-        
-        id 
+
+        id
         title
-        url 
+        url
         createdAt
-        comments{
+        updatedAt
+        comments {
           totalCount
         }
         upvoteCount
@@ -1411,53 +1412,58 @@ query viewerInfo{
 }
 
 # 查询仓库信息
-query repoInfo($login:String!,$name:String!){
-  repository(owner:$login,name:$name){
-   
-    node_id:id
-    repo_id:databaseId
-    
-    name
-    full_name:nameWithOwner
-    html_url:url
-    desc_Repo:description
-    homepageUrl
-    isPrivate
-    updatedAt
-    createdAt
-    pushedAt
-    primaryLanguage{
-      name
-    }
-    defaultBranchRef{
-      name
-    }
-    
-    issues(states:[OPEN]){
-      totalCount
-    }
-    stargazerCount
-    watchers{
-      totalCount
-    }
-    forkCount
-    
-    isInOrganization
-    owner{
-      node_id:id
+query repoInfo($login: String!, $name: String!) {
+  repository(owner: $login, name: $name) {
+    node_id: id
+    repo_id: databaseId
+
+    owner {
+      node_id: id
       login
-      html_url:url
-      avatarUrl(size:150)
+      html_url: url
+      avatarUrl
     }
-    
-    parent{
+
+    name
+    full_name: nameWithOwner
+    html_url: url
+    desc_Repo: description
+    isPrivate # 是否私有
+    updatedAt
+
+    primaryLanguage {
+      name
+    }
+    defaultBranchRef {
+      name
+    }
+    diskUsage # 磁盘占用 单位 kb
+    isInOrganization # 是否为组织的仓库
+    issues(states: [OPEN]) {
+      totalCount # 开启的issue数量
+    }
+    stargazerCount # star数量
+    watchers {
+      totalCount # watch 数量
+    }
+    forkCount # fork数量
+    discussions {
+      totalCount #讨论数量
+    }
+    pullRequests(states: [OPEN]) {
+      totalCount # 打开的pr数量
+    }
+    releases {
+      totalCount
+    }
+
+    parent {
       name
       nameWithOwner
-      
     }
-    
-    licenseInfo{
-      node_id:id
+
+    licenseInfo {
+      node_id: id
       name
       spdxId
       key
@@ -1645,6 +1651,220 @@ query issueEditInfo($owner: String!, $name: String!, $number: Int!) {
   }
 }
 
+# 查询讨论信息
+query discussionInfo($owner: String!, $name: String!, $number: Int!) {
+  repository(owner: $owner, name: $name) {
+    discussion(number: $number) {
+      number
+      title
+      url
+      bodyHTML
+      category {
+        description
+        emoji
+        emojiHTML
+        name
+        isAnswerable
+        slug
+      }
+      closed
+      closedAt
+      createdAt
+      repository {
+        nameWithOwner
+        owner {
+          login
+          avatarUrl(size: 150)
+        }
+      }
+
+      author {
+        login
+        avatarUrl(size: 150)
+      }
+      authorAssociation
+
+      # 标签
+      labels(first: 50) {
+        nodes {
+          name
+          color
+          description
+          isDefault
+          createdAt
+        }
+      }
+
+      # 表情
+      reactions(first: 50, orderBy: { field: CREATED_AT, direction: DESC }) {
+        totalCount
+        nodes {
+          content
+          reactable {
+            viewerCanReact # 是否可以修改表情
+          }
+          user {
+            login
+          }
+        }
+      }
+
+      # 点赞
+      upvoteCount
+      viewerHasUpvoted
+
+      # 权限
+      viewerCanClose # 是否可以关闭
+      viewerCanReact # 是否可以回复表情
+      viewerCanReopen # 是否可以打开
+      viewerCanUpdate # 是否可以修改内容
+      viewerCanDelete # 是否可以删除
+      viewerCanLabel # 是否可以更新标签
+      viewerCanUpvote # 是否可以点赞
+      viewerCanSubscribe # 是否可以订阅
+      viewerDidAuthor # 是否为作者
+      viewerSubscription
+    }
+  }
+}
+
+
+# 查询discussion评论
+query discussionComments(
+  $owner: String!
+  $name: String!
+  $number: Int!
+  $pageNum: Int!
+  $after: String
+) {
+  repository(owner: $owner, name: $name) {
+    discussion(number: $number) {
+      comments(first: $pageNum, after: $after) {
+        pageInfo {
+          endCursor
+          hasNextPage
+        }
+        nodes {
+          viewerCanDelete # 是否可以删除评论
+          viewerCanReact # 是否可以表情
+          viewerCanUpvote # 是否可以点赞
+          viewerDidAuthor # 是否为作者
+          viewerHasUpvoted # 是否已经点赞
+          bodyHTML
+          createdAt
+          author {
+            login
+            avatarUrl
+          }
+          authorAssociation # 作者和仓库的关系
+          upvoteCount
+          reactions(
+            first: 50
+            orderBy: { field: CREATED_AT, direction: DESC }
+          ) {
+            totalCount
+            nodes {
+              content
+              reactable {
+                viewerCanReact
+              }
+              user {
+                login
+              }
+            }
+          }
+          replies(first: 3) {
+            totalCount
+            nodes {
+              author {
+                login
+                avatarUrl
+              }
+              bodyText
+              createdAt
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+# 查询仓库的discussion 
+query repoDiscussions(
+  $login: String!
+  $name: String!
+  $pageCount: Int
+  $after: String
+  $state: [DiscussionState!]
+  $orderBy: DiscussionOrder
+  $answered: Boolean
+) {
+  repository(owner: $login, name: $name) {
+    discussions(
+      first: $pageCount
+      after: $after
+      states: $state
+      orderBy: $orderBy
+      answered: $answered
+    ) {
+      totalCount
+      pageInfo {
+        endCursor
+        hasNextPage
+      }
+      nodes {
+        number
+        repository {
+          nameWithOwner
+          name
+          owner {
+            login
+          }
+        }
+        title
+        upvoteCount
+        comments {
+          totalCount
+        }
+        url
+        updatedAt
+        createdAt
+      }
+    }
+  }
+}
+
+# 查询仓库的releases
+query repoReleases(
+  $login: String!
+  $name: String!
+  $pageCount: Int
+  $after: String
+  $orderBy: ReleaseOrder
+) {
+  repository(owner: $login, name: $name) {
+    releases(first: $pageCount, after: $after, orderBy: $orderBy) {
+      pageInfo {
+        endCursor
+        hasNextPage
+      }
+      totalCount
+      nodes {
+        name
+        publishedAt
+        isDraft
+        isLatest
+        isPrerelease
+        id
+        tagName
+        name
+      }
+    }
+  }
+}
+
+
 # 编辑issue assignee
 mutation editIssueAssignees($addInput: AddAssigneesToAssignableInput!, $removeInput: RemoveAssigneesFromAssignableInput!) {
   addAssigneesToAssignable(input:$addInput){
@@ -1747,3 +1967,4 @@ mutation unlockLockable($input: UnlockLockableInput!) {
     }
   }
 }
+

@@ -291,7 +291,7 @@
 
 
 
-- (ZLGithubRepositoryModel *) getRepoInfoWithFullName:(NSString *) fullName{
+- (ZLGithubRepositoryModelV2 *) getRepoInfoWithFullName:(NSString *) fullName{
     
     __block ZLGithubRepositoryModel * resultModel = nil;
     [self.dbQueue inDatabase:^(FMDatabase * _Nonnull db) {
@@ -299,7 +299,7 @@
         FMResultSet * resultSet = [ZLDataBaseManager queryTableInDB:db WithSql:GithubRepoQueryByFullName,fullName];
         if([resultSet next])
         {
-            ZLGithubRepositoryModel *model = [[ZLGithubRepositoryModel alloc] init];
+            ZLGithubRepositoryModelV2 *model = [[ZLGithubRepositoryModelV2 alloc] init];
             model.repo_id = [resultSet stringForColumn:@"repo_id"];
             model.node_id = [resultSet stringForColumn:@"node_id"];
             model.name = [resultSet stringForColumn:@"name"];
@@ -308,7 +308,6 @@
             
             model.html_url = [resultSet stringForColumn:@"html_url"];
             model.isPriva = [resultSet stringForColumn:@"isPriva"];
-            model.homepage_url = [resultSet stringForColumn:@"homepage_url"];
             model.language = [resultSet stringForColumn:@"language"];
             model.default_branch = [resultSet stringForColumn:@"default_branch"];
             model.sourceRepoFullName = [resultSet stringForColumn:@"sourceRepoFullName"];
@@ -316,9 +315,12 @@
             model.stargazers_count = [resultSet intForColumn:@"stargazers_count"];
             model.subscribers_count = [resultSet intForColumn:@"subscribers_count"];
             model.forks_count = [resultSet intForColumn:@"forks_count"];
-            model.created_at = [resultSet dateForColumn:@"created_at"];
             model.updated_at = [resultSet dateForColumn:@"updated_at"];
-            model.pushed_at = [resultSet dateForColumn:@"pushed_at"];
+            model.open_pullRequests_count = [resultSet intForColumn:@"open_pullRequests_count"];
+            model.diskUsage = [resultSet intForColumn:@"diskUsage"];
+            model.discussions_count = [resultSet intForColumn:@"discussions_count"];
+            model.releases_count = [resultSet intForColumn:@"releases_count"];
+            
             ZLGithubUserBriefModel *userModel = [ZLGithubUserBriefModel new];
             userModel.user_id = [resultSet stringForColumn:@"owner_user_id"];
             userModel.node_id = [resultSet stringForColumn:@"owner_node_id"];
@@ -342,7 +344,7 @@
     return resultModel;
 }
 
-- (void) insertOrUpdateRepoInfo:(ZLGithubRepositoryModel *) model{
+- (void) insertOrUpdateRepoInfo:(ZLGithubRepositoryModelV2 *) model{
     
     if(model.full_name.length <= 0){
         ZLLog_Info(@"ZLDataBase: ZLGithubRepositoryModel is invalid");
@@ -358,7 +360,38 @@
             ZLLog_Info(@"ZLDataBase: record for model[%@] is exist, so update",model.full_name);
             
             [ZLDataBaseManager updateTableInDB:db
-                                       WithSql:GithubRepoUpdate,model.repo_id,model.node_id,model.name,model.desc_Repo,model.html_url,@(model.isPriva),model.homepage_url,model.language,model.default_branch,model.sourceRepoFullName,@(model.open_issues_count),@(model.stargazers_count),@(model.forks_count),@(model.subscribers_count),model.updated_at,model.created_at,model.pushed_at,model.owner.avatar_url,model.owner.html_url,model.owner.loginName,model.owner.node_id,@(model.owner.type),model.owner.user_id,model.license.key,model.license.name,model.license.node_id,model.license.spdxId,[NSDate new],model.full_name];
+                                       WithSql:
+             GithubRepoUpdate,
+             model.repo_id,
+             model.node_id,
+             model.name,
+             model.desc_Repo,
+             model.html_url,
+             @(model.isPriva),
+             model.language,
+             model.default_branch,
+             model.sourceRepoFullName,
+             @(model.open_issues_count),
+             @(model.stargazers_count),
+             @(model.forks_count),
+             @(model.subscribers_count),
+             model.updated_at,
+             model.owner.avatar_url,
+             model.owner.html_url,
+             model.owner.loginName,
+             model.owner.node_id,
+             @(model.owner.type),
+             model.owner.user_id,
+             model.license.key,
+             model.license.name,
+             model.license.node_id,
+             model.license.spdxId,
+             @(model.open_pullRequests_count),
+             @(model.releases_count),
+             @(model.discussions_count),
+             @(model.diskUsage),
+             [NSDate new],
+             model.full_name];
             
             
         } else if(resultSet){
@@ -366,7 +399,38 @@
             ZLLog_Info(@"ZLDataBase: record for model[%@] not exist, so insert",model.full_name);
             
             [ZLDataBaseManager updateTableInDB:db
-                                       WithSql:GithubRepoInsert,model.repo_id,model.node_id,model.name,model.full_name,model.desc_Repo,model.html_url,@(model.isPriva),model.homepage_url,model.language,model.default_branch,model.sourceRepoFullName,@(model.open_issues_count),@(model.stargazers_count),@(model.subscribers_count),@(model.forks_count),model.updated_at,model.created_at,model.pushed_at,model.owner.user_id,model.owner.node_id,model.owner.loginName,model.owner.html_url,model.owner.avatar_url,@(model.owner.type),model.license.name,model.license.key,model.license.node_id,model.license.spdxId,[NSDate new]];
+                                       WithSql:
+             GithubRepoInsert,
+             model.repo_id,
+             model.node_id,
+             model.name,
+             model.full_name,
+             model.desc_Repo,
+             model.html_url,
+             @(model.isPriva),
+             model.language,
+             model.default_branch,
+             model.sourceRepoFullName,
+             @(model.open_issues_count),
+             @(model.stargazers_count),
+             @(model.subscribers_count),
+             @(model.forks_count),
+             model.updated_at,
+             model.owner.user_id,
+             model.owner.node_id,
+             model.owner.loginName,
+             model.owner.html_url,
+             model.owner.avatar_url,
+             @(model.owner.type),
+             model.license.name,
+             model.license.key,
+             model.license.node_id,
+             model.license.spdxId,
+             @(model.open_pullRequests_count),
+             @(model.releases_count),
+             @(model.discussions_count),
+             @(model.diskUsage),
+             [NSDate new]];
             
         }
         else
@@ -437,13 +501,22 @@
                 [self updateTableInDB:db WithSql:GithubOrgTableCreate];
                 // GitHubRepo
                 [self updateTableInDB:db WithSql:GithubRepositoryTableCreate];
+                // GithubUserContributions
+                [self updateTableInDB:db WithSql:GithubUserContributionsTableCreate];
                 
-                [self insertDBVersionForDB:db withVersion:ZLDBVersion];
+                [self updateDBVersionForDB:db withVersion:ZLDBVersion];
             }
+                break;
             case 1:
             {
                 [self updateTableInDB:db WithSql:GithubUserContributionsTableCreate];
-            
+            }
+            case 2:
+            {
+                [self updateTableInDB:db WithSql:GithubRepositoryTableUpdate1];
+                [self updateTableInDB:db WithSql:GithubRepositoryTableUpdate2];
+                [self updateTableInDB:db WithSql:GithubRepositoryTableUpdate3];
+                [self updateTableInDB:db WithSql:GithubRepositoryTableUpdate4];
                 [self updateDBVersionForDB:db withVersion:ZLDBVersion];
             }
             case ZLDBVersion:
@@ -454,37 +527,9 @@
             default:
                 break;
         }
+        
+        
     }];
-}
-
-
-+ (void) createAndUpdateGithubClientTableOfDB:(FMDatabase *)db
-{
-    // 1. 获取当前DB的version
-    int version = [self getDBVersionForDB:db];
-    
-    switch(version)
-    {
-        case 0:
-        {
-            // version表
-            [self updateTableInDB:db WithSql:DBVersionTableCreate];
-            // GitHubUser
-            [self updateTableInDB:db WithSql:GithubUserTableCreate];
-            // GitHubViewer
-            [self updateTableInDB:db WithSql:GithubViewerTableCreate];
-            // GitHubOrg
-            [self updateTableInDB:db WithSql:GithubOrgTableCreate];
-            // GitHubRepo
-            [self updateTableInDB:db WithSql:GithubRepositoryTableCreate];
-            
-            [self insertDBVersionForDB:db withVersion:ZLDBVersion];
-        }
-        case ZLDBVersion:
-            break;
-        default:
-            break;
-    }
 }
 
 

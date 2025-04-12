@@ -32,7 +32,7 @@
  * @param serialNumber 流水号
  **/
 
-- (ZLGithubRepositoryModel *) getRepoInfoWithFullName:(NSString * _Nonnull) fullName
+- (ZLGithubRepositoryModelV2 *) getRepoInfoWithFullName:(NSString * _Nonnull) fullName
                                          serialNumber:(NSString * _Nonnull) serialNumber
                                        completeHandle:(void(^ _Nonnull)(ZLOperationResultModel *  _Nonnull)) handle{
     
@@ -61,7 +61,7 @@
  * @param repoName Hello-World
  * @param serialNumber 流水号
  **/
-- (ZLGithubRepositoryModel *) getRepoInfoWithOwnerName:(NSString * _Nonnull) ownerName
+- (ZLGithubRepositoryModelV2 *) getRepoInfoWithOwnerName:(NSString * _Nonnull) ownerName
                                               repoName:(NSString * _Nonnull) repoName
                                           serialNumber:(NSString * _Nonnull) serialNumber
                                         completeHandle:(void(^ _Nonnull)(ZLOperationResultModel *  _Nonnull)) handle{
@@ -74,7 +74,7 @@
         repoResultModel.data = responseObject;
         
         if(result == true){
-            [[ZLServiceManager sharedInstance].dbModule insertOrUpdateRepoInfo:(ZLGithubRepositoryModel *)responseObject];
+            [[ZLServiceManager sharedInstance].dbModule insertOrUpdateRepoInfo:(ZLGithubRepositoryModelV2 *)responseObject];
         }
         
         ZLMainThreadDispatch(if(handle){

@@ -77,6 +77,53 @@ static NSNotificationName const _Nonnull ZLGetMyEventResult_Notification = @"ZLG
                serialNumber:(NSString *_Nonnull) serialNumber
              completeHandle:(void(^_Nonnull)(ZLOperationResultModel * _Nonnull)) handle;
 
+#pragma mark - discussion
+
+
+/**
+ * @brief 获取discussion info
+ * @param loginName 登录名
+ * @param repoName 仓库名
+ * @param number discussion number
+ * @param serialNumber 流水号
+ **/
+- (void) getDiscussionInfoWithLogin:(NSString * _Nonnull) login
+                           repoName:(NSString * _Nonnull) repoName
+                             number:(int) number
+                       serialNumber:(NSString *_Nonnull) serialNumber
+                     completeHandle:(void(^_Nonnull)(ZLOperationResultModel * _Nonnull)) handle;
+
+/**
+ * @brief 获取discussion 的评论
+ * @param loginName 登录名
+ * @param repoName 仓库名
+ * @param number discussion number
+ * @param per_page 每页数量
+ * @param after after
+ * @param serialNumber 流水号
+ **/
+- (void) getDiscussionCommentWithLogin:(NSString * _Nonnull) login
+                              repoName:(NSString * _Nonnull) repoName
+                                number:(int) number
+                              per_page:(int) per_page
+                                 after:(NSString * _Nullable) after
+                          serialNumber:(NSString *_Nonnull) serialNumber
+                        completeHandle:(void(^_Nonnull)(ZLOperationResultModel * _Nonnull)) handle;
+
+/**
+ * @brief 获取仓库的discussion列表
+ * @param loginName 登录名
+ * @param repoName 仓库名
+ * @param per_page 每页数量
+ * @param after after 
+ * @param serialNumber 流水号
+ **/
+- (void) getDiscussionInfoListWithLogin:(NSString * _Nonnull) login
+                               repoName:(NSString * _Nonnull) repoName
+                               per_page:(int) number
+                                  after:(NSString * _Nullable) after
+                           serialNumber:(NSString *_Nonnull) serialNumber
+                         completeHandle:(void(^_Nonnull)(ZLOperationResultModel * _Nonnull)) handle;
 
 #pragma mark - issues
 

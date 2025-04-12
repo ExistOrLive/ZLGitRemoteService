@@ -196,6 +196,95 @@
                                                      block:reposoneBlock];
 }
 
+#pragma mark - discussion
+
+- (void) getDiscussionInfoWithLogin:(NSString * _Nonnull) login
+                           repoName:(NSString * _Nonnull) repoName
+                             number:(int) number
+                       serialNumber:(NSString *_Nonnull) serialNumber
+                     completeHandle:(void(^_Nonnull)(ZLOperationResultModel * _Nonnull)) handle {
+    
+    GithubResponse reposoneBlock = ^(BOOL result, id _Nullable responseObject, NSString * serialNumber) {
+        
+        ZLOperationResultModel * resultModel = [[ZLOperationResultModel alloc] init];
+        resultModel.result = result;
+        resultModel.serialNumber = serialNumber;
+        resultModel.data = responseObject;
+        
+        if(handle){
+            ZLMainThreadDispatch(handle(resultModel);)
+        }
+        
+    };
+    
+    [[ZLGithubHttpClientV2 defaultClient] getDiscussionInfoWithLogin:login
+                                                            repoName:repoName
+                                                              number:(NSInteger)number
+                                                        serialNumber:serialNumber
+                                                               block:reposoneBlock];
+}
+
+
+- (void) getDiscussionCommentWithLogin:(NSString * _Nonnull) login
+                              repoName:(NSString * _Nonnull) repoName
+                                number:(int) number
+                              per_page:(int) per_page
+                                 after:(NSString * _Nullable) after
+                          serialNumber:(NSString *_Nonnull) serialNumber
+                        completeHandle:(void(^_Nonnull)(ZLOperationResultModel * _Nonnull)) handle {
+    
+    GithubResponse reposoneBlock = ^(BOOL result, id _Nullable responseObject, NSString * serialNumber) {
+        
+        ZLOperationResultModel * resultModel = [[ZLOperationResultModel alloc] init];
+        resultModel.result = result;
+        resultModel.serialNumber = serialNumber;
+        resultModel.data = responseObject;
+        
+        if(handle){
+            ZLMainThreadDispatch(handle(resultModel);)
+        }
+        
+    };
+    
+    [[ZLGithubHttpClientV2 defaultClient] getDiscussionCommentWithLogin:login
+                                                               repoName:repoName
+                                                                 number:number
+                                                               per_page:per_page
+                                                                  after:after
+                                                           serialNumber:serialNumber
+                                                                  block:reposoneBlock];
+}
+
+
+- (void) getDiscussionInfoListWithLogin:(NSString * _Nonnull) login
+                               repoName:(NSString * _Nonnull) repoName
+                               per_page:(int) per_page
+                                  after:(NSString * _Nullable) after
+                           serialNumber:(NSString *_Nonnull) serialNumber
+                         completeHandle:(void(^_Nonnull)(ZLOperationResultModel * _Nonnull)) handle {
+    
+    GithubResponse reposoneBlock = ^(BOOL result, id _Nullable responseObject, NSString * serialNumber) {
+        
+        ZLOperationResultModel * resultModel = [[ZLOperationResultModel alloc] init];
+        resultModel.result = result;
+        resultModel.serialNumber = serialNumber;
+        resultModel.data = responseObject;
+        
+        if(handle){
+            ZLMainThreadDispatch(handle(resultModel);)
+        }
+        
+    };
+    
+    [[ZLGithubHttpClientV2 defaultClient] getDiscussionInfoListWithLogin:login
+                                                                repoName:repoName
+                                                                per_page:per_page
+                                                                   after:after
+                                                            serialNumber:serialNumber
+                                                                   block:reposoneBlock];
+                                                        
+}
+
 
 #pragma mark - issue
 

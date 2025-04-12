@@ -360,7 +360,7 @@ public extension ZLGithubHttpClientV2{
                                serialNumber: String,
                                block: @escaping GithubResponseSwift) {
         
-        let input = AddCommentInput(subjectId: issueId, body: commentBody, clientMutationId: serialNumber)
+        let input = AddCommentInput(body: commentBody, clientMutationId: serialNumber,subjectId: issueId)
         let mutation = AddIssueCommentMutation(addInput: input)
         baseMutation(mutation: mutation, serialNumber: serialNumber, block: block)
     }
@@ -400,7 +400,7 @@ public extension ZLGithubHttpClientV2{
         
         if lock {
             // 锁定
-            let input = LockLockableInput(lockableId: id, lockReason: nil, clientMutationId: serialNumber)
+            let input = LockLockableInput(clientMutationId: serialNumber, lockReason: nil, lockableId: id)
             let mutation = LockLockableMutation(input: input)
             baseMutation(mutation: mutation, serialNumber: serialNumber, block: { result,data,serialNumber in
                 if  result,
@@ -418,7 +418,7 @@ public extension ZLGithubHttpClientV2{
         } else {
             
             // 解锁
-            let input = UnlockLockableInput(lockableId: id, clientMutationId: serialNumber)
+            let input = UnlockLockableInput(clientMutationId: serialNumber, lockableId: id)
             let mutation = UnlockLockableMutation(input: input)
             baseMutation(mutation: mutation, serialNumber: serialNumber, block: { result,data,serialNumber in
                 if  result,
@@ -448,7 +448,7 @@ public extension ZLGithubHttpClientV2{
         
         if open {
             // 打开
-            let input = ReopenIssueInput(issueId: id, clientMutationId: serialNumber)
+            let input = ReopenIssueInput(clientMutationId: serialNumber, issueId: id)
             let mutation = ReopenIssueMutation(input: input)
             baseMutation(mutation: mutation, serialNumber: serialNumber, block: { result,data,serialNumber in
                 if  result,
@@ -465,7 +465,7 @@ public extension ZLGithubHttpClientV2{
             
         } else {
             // 关闭
-            let input = CloseIssueInput(issueId: id, clientMutationId: serialNumber)
+            let input = CloseIssueInput(clientMutationId: serialNumber, issueId: id)
             let mutation = CloseIssueMutation(input: input)
             baseMutation(mutation: mutation, serialNumber: serialNumber, block: { result,data,serialNumber in
                 if  result,
@@ -488,9 +488,9 @@ public extension ZLGithubHttpClientV2{
                                      serialNumber: String,
                                      block: @escaping GithubResponseSwift) {
         
-        let input = UpdateSubscriptionInput(subscribableId: id,
+        let input = UpdateSubscriptionInput(clientMutationId: id,
                                             state: subscribe ? .subscribed : .unsubscribed ,
-                                            clientMutationId: serialNumber)
+                                            subscribableId: serialNumber)
         let mutation = UpdateSubscriptionMutation(updateInput: input)
         baseMutation(mutation: mutation,serialNumber: serialNumber,block:block)
     }
@@ -513,6 +513,61 @@ public extension ZLGithubHttpClientV2{
                          serialNumber: String,
                          block: @escaping GithubResponseSwift) {
         let query = PrInfoQuery(owner: login, name: repoName, number: number, after: after)
+        self.baseQuery(query: query, serialNumber: serialNumber, block: block)
+    }
+
+    // MARK: discussion info
+    
+    /**
+     * @param login
+     * @param repoName
+     *  @param number
+     *  查询某个discussion
+     */
+    @objc func getDiscussionInfo(login : String,
+                                 repoName : String,
+                                 number : Int,
+                                 serialNumber: String,
+                                 block: @escaping GithubResponseSwift) {
+        let query = DiscussionInfoQuery(owner: login, name: repoName, number: number)
+        self.baseQuery(query: query, serialNumber: serialNumber, block: block)
+    }
+    
+    /**
+     * @param login
+     * @param repoName
+     * @param number
+     * @per_page per_page
+     * @after after
+     *  查询某个discussion comment
+     */
+    @objc func getDiscussionComment(login : String,
+                                    repoName : String,
+                                    number : Int,
+                                    per_page: Int,
+                                    after: String?,
+                                    serialNumber: String,
+                                    block: @escaping GithubResponseSwift) {
+        let query = DiscussionCommentsQuery(owner: login,
+                                            name: repoName,
+                                            number: number,
+                                            pageNum: per_page,
+                                            after: after)
+        self.baseQuery(query: query, serialNumber: serialNumber, block: block)
+    }
+    
+    /**
+     * @param login
+     * @param repoName
+     *  查询仓库的discussion列表
+     */
+    @objc func getDiscussionInfoList(login : String,
+                                     repoName : String,
+                                     per_page: Int,
+                                     after: String?,
+                                     serialNumber: String,
+                                     block: @escaping GithubResponseSwift) {
+        let query = RepoDiscussionsQuery(login: login, name: repoName, pageCount: per_page, after: after, state: nil, orderBy: DiscussionOrder(direction: .desc, field: .updatedAt))
         self.baseQuery(query: query, serialNumber: serialNumber, block: block)
     }
 
@@ -648,7 +703,7 @@ public extension ZLGithubHttpClientV2{
                 if queryData.repository == nil {
                     block(result,nil,serialNumber)
                 } else {
-                    block(result,ZLGithubRepositoryModel(queryData: queryData),serialNumber)
+                    block(result,ZLGithubRepositoryModelV2(queryData: queryData),serialNumber)
                 }
             } else {
                 block(result,data,serialNumber)

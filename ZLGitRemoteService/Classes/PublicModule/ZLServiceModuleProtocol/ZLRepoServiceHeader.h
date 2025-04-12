@@ -11,7 +11,7 @@
 
 #import "ZLBaseServiceModel.h"
 @class ZLOperationResultModel;
-@class ZLGithubRepositoryModel;
+@class ZLGithubRepositoryModelV2;
 
 #pragma mark - NotificationName
 
@@ -26,7 +26,7 @@
  * @param serialNumber 流水号
  **/
 
-- (ZLGithubRepositoryModel *_Nullable) getRepoInfoWithFullName:(NSString * _Nonnull) fullName
+- (ZLGithubRepositoryModelV2 *_Nullable) getRepoInfoWithFullName:(NSString * _Nonnull) fullName
                                          serialNumber:(NSString * _Nonnull) serialNumber
                                        completeHandle:(void(^ _Nonnull)(ZLOperationResultModel *  _Nonnull)) handle;
 
@@ -36,7 +36,7 @@
  * @param repoName Hello-World
  * @param serialNumber 流水号
  **/
-- (ZLGithubRepositoryModel *_Nullable) getRepoInfoWithOwnerName:(NSString * _Nonnull) ownerName
+- (ZLGithubRepositoryModelV2 *_Nullable) getRepoInfoWithOwnerName:(NSString * _Nonnull) ownerName
                                               repoName:(NSString * _Nonnull) repoName
                                           serialNumber:(NSString * _Nonnull) serialNumber
                                         completeHandle:(void(^ _Nonnull)(ZLOperationResultModel *  _Nonnull)) handle;

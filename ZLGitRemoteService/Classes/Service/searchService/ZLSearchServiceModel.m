@@ -181,6 +181,10 @@
             searchType = SearchTypeForOCIssue;
         }
             break;
+        case ZLSearchTypeDiscussion: {
+            query = keyWord;
+            searchType = SearchTypeForOCDiscussion;
+        }
     }
     
     [[ZLGithubHttpClientV2 defaultClient] searchItemAfter:after

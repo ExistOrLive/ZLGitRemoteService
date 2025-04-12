@@ -22,6 +22,7 @@ typedef NS_ENUM(NSUInteger, ZLSearchType) {
     ZLSearchTypeOrganizations,
     ZLSearchTypeIssues,
     ZLSearchTypePullRequests,
+    ZLSearchTypeDiscussion
 };
 
 

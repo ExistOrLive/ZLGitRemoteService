@@ -12,7 +12,7 @@
 #import <Foundation/Foundation.h>
 @class ZLGithubUserModel;
 @class ZLGithubUserBriefModel;
-@class ZLGithubRepositoryModel;
+@class ZLGithubRepositoryModelV2;
 
 @protocol ZLDBModuleProtocol<NSObject>
 
@@ -26,8 +26,8 @@
 - (void) insertOrUpdateViewerInfo:(ZLGithubUserModel * _Nonnull) model;
 
 
-- (ZLGithubRepositoryModel * _Nullable) getRepoInfoWithFullName:(NSString * _Nonnull) fullName;
-- (void) insertOrUpdateRepoInfo:(ZLGithubRepositoryModel * _Nonnull) model;
+- (ZLGithubRepositoryModelV2 * _Nullable) getRepoInfoWithFullName:(NSString * _Nonnull) fullName;
+- (void) insertOrUpdateRepoInfo:(ZLGithubRepositoryModelV2 * _Nonnull) model;
 
 - (NSString * _Nullable) getUserContributionsWithLoginName:(NSString * _Nonnull) loginName;
 - (void) insertOrUpdateUserContributions:(NSString * _Nonnull) contributions loginName:(NSString * _Nonnull) loginName;
