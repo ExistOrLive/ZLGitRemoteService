@@ -182,7 +182,7 @@
         }
             break;
         case ZLSearchTypeDiscussion: {
-            query = keyWord;
+            query = filterInfo ? [filterInfo GraphqlQueryForDiscussionFilter:keyWord] : keyWord;
             searchType = SearchTypeForOCDiscussion;
         }
     }

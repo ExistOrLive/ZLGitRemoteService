@@ -35,6 +35,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property(nonatomic,assign) BOOL issueOrPRClosed;    // 默认open
 
+@property(nonatomic,assign) BOOL discussionClosed;   // 默认open
+@property(nonatomic,assign) BOOL discussionAnswered;   // 默认open
+
 
 
 
@@ -48,6 +51,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (NSString *) GraphqlQueryForRepoFilter:(NSString *) keyWord;
 - (NSString *) GraphqlQueryForIssueFilter:(NSString *) keyWord;
 - (NSString *) GraphqlQueryForPullRequestFilter:(NSString *) keyWord;
+- (NSString *) GraphqlQueryForDiscussionFilter:(NSString *) keyWord;
 
 @end
 

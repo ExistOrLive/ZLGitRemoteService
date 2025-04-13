@@ -291,5 +291,22 @@
     
 }
 
+// https://docs.github.com/en/search-github/searching-on-github/searching-discussions
+- (NSString *) GraphqlQueryForDiscussionFilter:(NSString *) keyWord{
+    
+    NSMutableString * finalKeyWord = [keyWord mutableCopy];
+    
+    if([self.firstCreatedTimeStr length] > 0 || [self.secondCreatedTimeStr length] > 0){
+        [finalKeyWord appendFormat:@" created:%@..%@",[self.firstCreatedTimeStr length] > 0 ? self.firstCreatedTimeStr : @"*",[self.secondCreatedTimeStr length] > 0 ? self.secondCreatedTimeStr : @"*"];
+    }
+        
+    if(self.order.length > 0){
+        [finalKeyWord appendFormat:@" sort:%@-%@",self.order,self.isAsc ? @"asc" : @"desc"];
+    }
+    
+    return [finalKeyWord copy];
+    
+}
+
 
 @end
