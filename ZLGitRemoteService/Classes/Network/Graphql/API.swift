@@ -219,98 +219,6 @@ public enum ContributionLevel: RawRepresentable, Equatable, Hashable, CaseIterab
   }
 }
 
-/// The semantic purpose of the column - todo, in progress, or done.
-public enum ProjectColumnPurpose: RawRepresentable, Equatable, Hashable, CaseIterable, Apollo.JSONDecodable, Apollo.JSONEncodable {
-  public typealias RawValue = String
-  /// The column contains cards which are complete
-  case done
-  /// The column contains cards which are currently being worked on
-  case inProgress
-  /// The column contains cards still to be worked on
-  case todo
-  /// Auto generated constant for unknown enum values
-  case __unknown(RawValue)
-
-  public init?(rawValue: RawValue) {
-    switch rawValue {
-      case "DONE": self = .done
-      case "IN_PROGRESS": self = .inProgress
-      case "TODO": self = .todo
-      default: self = .__unknown(rawValue)
-    }
-  }
-
-  public var rawValue: RawValue {
-    switch self {
-      case .done: return "DONE"
-      case .inProgress: return "IN_PROGRESS"
-      case .todo: return "TODO"
-      case .__unknown(let value): return value
-    }
-  }
-
-  public static func == (lhs: ProjectColumnPurpose, rhs: ProjectColumnPurpose) -> Bool {
-    switch (lhs, rhs) {
-      case (.done, .done): return true
-      case (.inProgress, .inProgress): return true
-      case (.todo, .todo): return true
-      case (.__unknown(let lhsValue), .__unknown(let rhsValue)): return lhsValue == rhsValue
-      default: return false
-    }
-  }
-
-  public static var allCases: [ProjectColumnPurpose] {
-    return [
-      .done,
-      .inProgress,
-      .todo,
-    ]
-  }
-}
-
-/// State of the project; either 'open' or 'closed'
-public enum ProjectState: RawRepresentable, Equatable, Hashable, CaseIterable, Apollo.JSONDecodable, Apollo.JSONEncodable {
-  public typealias RawValue = String
-  /// The project is closed.
-  case closed
-  /// The project is open.
-  case `open`
-  /// Auto generated constant for unknown enum values
-  case __unknown(RawValue)
-
-  public init?(rawValue: RawValue) {
-    switch rawValue {
-      case "CLOSED": self = .closed
-      case "OPEN": self = .open
-      default: self = .__unknown(rawValue)
-    }
-  }
-
-  public var rawValue: RawValue {
-    switch self {
-      case .closed: return "CLOSED"
-      case .open: return "OPEN"
-      case .__unknown(let value): return value
-    }
-  }
-
-  public static func == (lhs: ProjectState, rhs: ProjectState) -> Bool {
-    switch (lhs, rhs) {
-      case (.closed, .closed): return true
-      case (.open, .open): return true
-      case (.__unknown(let lhsValue), .__unknown(let rhsValue)): return lhsValue == rhsValue
-      default: return false
-    }
-  }
-
-  public static var allCases: [ProjectState] {
-    return [
-      .closed,
-      .open,
-    ]
-  }
-}
-
 /// The possible errors that will prevent a user from updating a comment.
 public enum CommentCannotUpdateReason: RawRepresentable, Equatable, Hashable, CaseIterable, Apollo.JSONDecodable, Apollo.JSONEncodable {
   public typealias RawValue = String
@@ -1678,6 +1586,7 @@ public final class ViewerTopRepositoriesQuery: GraphQLQuery {
           pageInfo {
             __typename
             endCursor
+            hasNextPage
           }
           nodes {
             __typename
@@ -1841,6 +1750,7 @@ public final class ViewerTopRepositoriesQuery: GraphQLQuery {
             return [
               GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
               GraphQLField("endCursor", type: .scalar(String.self)),
+              GraphQLField("hasNextPage", type: .nonNull(.scalar(Bool.self))),
             ]
           }
 
@@ -1850,8 +1760,8 @@ public final class ViewerTopRepositoriesQuery: GraphQLQuery {
             self.resultMap = unsafeResultMap
           }
 
-          public init(endCursor: String? = nil) {
-            self.init(unsafeResultMap: ["__typename": "PageInfo", "endCursor": endCursor])
+          public init(endCursor: String? = nil, hasNextPage: Bool) {
+            self.init(unsafeResultMap: ["__typename": "PageInfo", "endCursor": endCursor, "hasNextPage": hasNextPage])
           }
 
           public var __typename: String {
@@ -1870,6 +1780,16 @@ public final class ViewerTopRepositoriesQuery: GraphQLQuery {
             }
             set {
               resultMap.updateValue(newValue, forKey: "endCursor")
+            }
+          }
+
+          /// When paginating forwards, are there more items?
+          public var hasNextPage: Bool {
+            get {
+              return resultMap["hasNextPage"]! as! Bool
+            }
+            set {
+              resultMap.updateValue(newValue, forKey: "hasNextPage")
             }
           }
         }
@@ -28514,34 +28434,6 @@ public final class IssueEditInfoQuery: GraphQLQuery {
             closedAt
             progressPercentage
           }
-          projectCards(first: 5) {
-            __typename
-            totalCount
-            nodes {
-              __typename
-              column {
-                __typename
-                name
-                purpose
-              }
-              project {
-                __typename
-                name
-                progress {
-                  __typename
-                  donePercentage
-                  doneCount
-                  todoPercentage
-                  todoCount
-                  inProgressPercentage
-                  inProgressCount
-                  enabled
-                }
-                state
-              }
-              url
-            }
-          }
           locked
           viewerCanReact
           viewerCanUpdate
@@ -28654,7 +28546,6 @@ public final class IssueEditInfoQuery: GraphQLQuery {
             GraphQLField("assignees", arguments: ["first": 20], type: .nonNull(.object(Assignee.selections))),
             GraphQLField("participants", arguments: ["first": 50], type: .nonNull(.object(Participant.selections))),
             GraphQLField("milestone", type: .object(Milestone.selections)),
-            GraphQLField("projectCards", arguments: ["first": 5], type: .nonNull(.object(ProjectCard.selections))),
             GraphQLField("locked", type: .nonNull(.scalar(Bool.self))),
             GraphQLField("viewerCanReact", type: .nonNull(.scalar(Bool.self))),
             GraphQLField("viewerCanUpdate", type: .nonNull(.scalar(Bool.self))),
@@ -28673,8 +28564,8 @@ public final class IssueEditInfoQuery: GraphQLQuery {
           self.resultMap = unsafeResultMap
         }
 
-        public init(id: GraphQLID, title: String, number: Int, closed: Bool, labels: Label? = nil, assignees: Assignee, participants: Participant, milestone: Milestone? = nil, projectCards: ProjectCard, locked: Bool, viewerCanReact: Bool, viewerCanUpdate: Bool, viewerCanSubscribe: Bool, viewerDidAuthor: Bool, viewerCannotUpdateReasons: [CommentCannotUpdateReason], isPinned: Bool? = nil, isReadByViewer: Bool? = nil, viewerSubscription: SubscriptionState? = nil) {
-          self.init(unsafeResultMap: ["__typename": "Issue", "id": id, "title": title, "number": number, "closed": closed, "labels": labels.flatMap { (value: Label) -> ResultMap in value.resultMap }, "assignees": assignees.resultMap, "participants": participants.resultMap, "milestone": milestone.flatMap { (value: Milestone) -> ResultMap in value.resultMap }, "projectCards": projectCards.resultMap, "locked": locked, "viewerCanReact": viewerCanReact, "viewerCanUpdate": viewerCanUpdate, "viewerCanSubscribe": viewerCanSubscribe, "viewerDidAuthor": viewerDidAuthor, "viewerCannotUpdateReasons": viewerCannotUpdateReasons, "isPinned": isPinned, "isReadByViewer": isReadByViewer, "viewerSubscription": viewerSubscription])
+        public init(id: GraphQLID, title: String, number: Int, closed: Bool, labels: Label? = nil, assignees: Assignee, participants: Participant, milestone: Milestone? = nil, locked: Bool, viewerCanReact: Bool, viewerCanUpdate: Bool, viewerCanSubscribe: Bool, viewerDidAuthor: Bool, viewerCannotUpdateReasons: [CommentCannotUpdateReason], isPinned: Bool? = nil, isReadByViewer: Bool? = nil, viewerSubscription: SubscriptionState? = nil) {
+          self.init(unsafeResultMap: ["__typename": "Issue", "id": id, "title": title, "number": number, "closed": closed, "labels": labels.flatMap { (value: Label) -> ResultMap in value.resultMap }, "assignees": assignees.resultMap, "participants": participants.resultMap, "milestone": milestone.flatMap { (value: Milestone) -> ResultMap in value.resultMap }, "locked": locked, "viewerCanReact": viewerCanReact, "viewerCanUpdate": viewerCanUpdate, "viewerCanSubscribe": viewerCanSubscribe, "viewerDidAuthor": viewerDidAuthor, "viewerCannotUpdateReasons": viewerCannotUpdateReasons, "isPinned": isPinned, "isReadByViewer": isReadByViewer, "viewerSubscription": viewerSubscription])
         }
 
         public var __typename: String {
@@ -28763,17 +28654,6 @@ public final class IssueEditInfoQuery: GraphQLQuery {
           }
           set {
             resultMap.updateValue(newValue?.resultMap, forKey: "milestone")
-          }
-        }
-
-        /// List of project cards associated with this issue.
-        @available(*, deprecated, message: "Projects (classic) is being deprecated in favor of the new Projects experience, see: https://github.blog/changelog/2024-05-23-sunset-notice-projects-classic/. Removal on 2025-04-01 UTC.")
-        public var projectCards: ProjectCard {
-          get {
-            return ProjectCard(unsafeResultMap: resultMap["projectCards"]! as! ResultMap)
-          }
-          set {
-            resultMap.updateValue(newValue.resultMap, forKey: "projectCards")
           }
         }
 
@@ -29385,356 +29265,6 @@ public final class IssueEditInfoQuery: GraphQLQuery {
               }
               set {
                 resultMap.updateValue(newValue, forKey: "avatarUrl")
-              }
-            }
-          }
-        }
-
-        public struct ProjectCard: GraphQLSelectionSet {
-          public static let possibleTypes: [String] = ["ProjectCardConnection"]
-
-          public static var selections: [GraphQLSelection] {
-            return [
-              GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
-              GraphQLField("totalCount", type: .nonNull(.scalar(Int.self))),
-              GraphQLField("nodes", type: .list(.object(Node.selections))),
-            ]
-          }
-
-          public private(set) var resultMap: ResultMap
-
-          public init(unsafeResultMap: ResultMap) {
-            self.resultMap = unsafeResultMap
-          }
-
-          public init(totalCount: Int, nodes: [Node?]? = nil) {
-            self.init(unsafeResultMap: ["__typename": "ProjectCardConnection", "totalCount": totalCount, "nodes": nodes.flatMap { (value: [Node?]) -> [ResultMap?] in value.map { (value: Node?) -> ResultMap? in value.flatMap { (value: Node) -> ResultMap in value.resultMap } } }])
-          }
-
-          public var __typename: String {
-            get {
-              return resultMap["__typename"]! as! String
-            }
-            set {
-              resultMap.updateValue(newValue, forKey: "__typename")
-            }
-          }
-
-          /// Identifies the total count of items in the connection.
-          public var totalCount: Int {
-            get {
-              return resultMap["totalCount"]! as! Int
-            }
-            set {
-              resultMap.updateValue(newValue, forKey: "totalCount")
-            }
-          }
-
-          /// A list of nodes.
-          public var nodes: [Node?]? {
-            get {
-              return (resultMap["nodes"] as? [ResultMap?]).flatMap { (value: [ResultMap?]) -> [Node?] in value.map { (value: ResultMap?) -> Node? in value.flatMap { (value: ResultMap) -> Node in Node(unsafeResultMap: value) } } }
-            }
-            set {
-              resultMap.updateValue(newValue.flatMap { (value: [Node?]) -> [ResultMap?] in value.map { (value: Node?) -> ResultMap? in value.flatMap { (value: Node) -> ResultMap in value.resultMap } } }, forKey: "nodes")
-            }
-          }
-
-          public struct Node: GraphQLSelectionSet {
-            public static let possibleTypes: [String] = ["ProjectCard"]
-
-            public static var selections: [GraphQLSelection] {
-              return [
-                GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
-                GraphQLField("column", type: .object(Column.selections)),
-                GraphQLField("project", type: .nonNull(.object(Project.selections))),
-                GraphQLField("url", type: .nonNull(.scalar(String.self))),
-              ]
-            }
-
-            public private(set) var resultMap: ResultMap
-
-            public init(unsafeResultMap: ResultMap) {
-              self.resultMap = unsafeResultMap
-            }
-
-            public init(column: Column? = nil, project: Project, url: String) {
-              self.init(unsafeResultMap: ["__typename": "ProjectCard", "column": column.flatMap { (value: Column) -> ResultMap in value.resultMap }, "project": project.resultMap, "url": url])
-            }
-
-            public var __typename: String {
-              get {
-                return resultMap["__typename"]! as! String
-              }
-              set {
-                resultMap.updateValue(newValue, forKey: "__typename")
-              }
-            }
-
-            /// The project column this card is associated under. A card may only belong to one
-            /// project column at a time. The column field will be null if the card is created
-            /// in a pending state and has yet to be associated with a column. Once cards are
-            /// associated with a column, they will not become pending in the future.
-            @available(*, deprecated, message: "Projects (classic) is being deprecated in favor of the new Projects experience, see: https://github.blog/changelog/2024-05-23-sunset-notice-projects-classic/. Removal on 2025-04-01 UTC.")
-            public var column: Column? {
-              get {
-                return (resultMap["column"] as? ResultMap).flatMap { Column(unsafeResultMap: $0) }
-              }
-              set {
-                resultMap.updateValue(newValue?.resultMap, forKey: "column")
-              }
-            }
-
-            /// The project that contains this card.
-            @available(*, deprecated, message: "Projects (classic) is being deprecated in favor of the new Projects experience, see: https://github.blog/changelog/2024-05-23-sunset-notice-projects-classic/. Removal on 2025-04-01 UTC.")
-            public var project: Project {
-              get {
-                return Project(unsafeResultMap: resultMap["project"]! as! ResultMap)
-              }
-              set {
-                resultMap.updateValue(newValue.resultMap, forKey: "project")
-              }
-            }
-
-            /// The HTTP URL for this card
-            @available(*, deprecated, message: "Projects (classic) is being deprecated in favor of the new Projects experience, see: https://github.blog/changelog/2024-05-23-sunset-notice-projects-classic/. Removal on 2025-04-01 UTC.")
-            public var url: String {
-              get {
-                return resultMap["url"]! as! String
-              }
-              set {
-                resultMap.updateValue(newValue, forKey: "url")
-              }
-            }
-
-            public struct Column: GraphQLSelectionSet {
-              public static let possibleTypes: [String] = ["ProjectColumn"]
-
-              public static var selections: [GraphQLSelection] {
-                return [
-                  GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
-                  GraphQLField("name", type: .nonNull(.scalar(String.self))),
-                  GraphQLField("purpose", type: .scalar(ProjectColumnPurpose.self)),
-                ]
-              }
-
-              public private(set) var resultMap: ResultMap
-
-              public init(unsafeResultMap: ResultMap) {
-                self.resultMap = unsafeResultMap
-              }
-
-              public init(name: String, purpose: ProjectColumnPurpose? = nil) {
-                self.init(unsafeResultMap: ["__typename": "ProjectColumn", "name": name, "purpose": purpose])
-              }
-
-              public var __typename: String {
-                get {
-                  return resultMap["__typename"]! as! String
-                }
-                set {
-                  resultMap.updateValue(newValue, forKey: "__typename")
-                }
-              }
-
-              /// The project column's name.
-              @available(*, deprecated, message: "Projects (classic) is being deprecated in favor of the new Projects experience, see: https://github.blog/changelog/2024-05-23-sunset-notice-projects-classic/. Removal on 2025-04-01 UTC.")
-              public var name: String {
-                get {
-                  return resultMap["name"]! as! String
-                }
-                set {
-                  resultMap.updateValue(newValue, forKey: "name")
-                }
-              }
-
-              /// The semantic purpose of the column
-              @available(*, deprecated, message: "Projects (classic) is being deprecated in favor of the new Projects experience, see: https://github.blog/changelog/2024-05-23-sunset-notice-projects-classic/. Removal on 2025-04-01 UTC.")
-              public var purpose: ProjectColumnPurpose? {
-                get {
-                  return resultMap["purpose"] as? ProjectColumnPurpose
-                }
-                set {
-                  resultMap.updateValue(newValue, forKey: "purpose")
-                }
-              }
-            }
-
-            public struct Project: GraphQLSelectionSet {
-              public static let possibleTypes: [String] = ["Project"]
-
-              public static var selections: [GraphQLSelection] {
-                return [
-                  GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
-                  GraphQLField("name", type: .nonNull(.scalar(String.self))),
-                  GraphQLField("progress", type: .nonNull(.object(Progress.selections))),
-                  GraphQLField("state", type: .nonNull(.scalar(ProjectState.self))),
-                ]
-              }
-
-              public private(set) var resultMap: ResultMap
-
-              public init(unsafeResultMap: ResultMap) {
-                self.resultMap = unsafeResultMap
-              }
-
-              public init(name: String, progress: Progress, state: ProjectState) {
-                self.init(unsafeResultMap: ["__typename": "Project", "name": name, "progress": progress.resultMap, "state": state])
-              }
-
-              public var __typename: String {
-                get {
-                  return resultMap["__typename"]! as! String
-                }
-                set {
-                  resultMap.updateValue(newValue, forKey: "__typename")
-                }
-              }
-
-              /// The project's name.
-              @available(*, deprecated, message: "Projects (classic) is being deprecated in favor of the new Projects experience, see: https://github.blog/changelog/2024-05-23-sunset-notice-projects-classic/. Removal on 2025-04-01 UTC.")
-              public var name: String {
-                get {
-                  return resultMap["name"]! as! String
-                }
-                set {
-                  resultMap.updateValue(newValue, forKey: "name")
-                }
-              }
-
-              /// Project progress details.
-              @available(*, deprecated, message: "Projects (classic) is being deprecated in favor of the new Projects experience, see: https://github.blog/changelog/2024-05-23-sunset-notice-projects-classic/. Removal on 2025-04-01 UTC.")
-              public var progress: Progress {
-                get {
-                  return Progress(unsafeResultMap: resultMap["progress"]! as! ResultMap)
-                }
-                set {
-                  resultMap.updateValue(newValue.resultMap, forKey: "progress")
-                }
-              }
-
-              /// Whether the project is open or closed.
-              @available(*, deprecated, message: "Projects (classic) is being deprecated in favor of the new Projects experience, see: https://github.blog/changelog/2024-05-23-sunset-notice-projects-classic/. Removal on 2025-04-01 UTC.")
-              public var state: ProjectState {
-                get {
-                  return resultMap["state"]! as! ProjectState
-                }
-                set {
-                  resultMap.updateValue(newValue, forKey: "state")
-                }
-              }
-
-              public struct Progress: GraphQLSelectionSet {
-                public static let possibleTypes: [String] = ["ProjectProgress"]
-
-                public static var selections: [GraphQLSelection] {
-                  return [
-                    GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
-                    GraphQLField("donePercentage", type: .nonNull(.scalar(Double.self))),
-                    GraphQLField("doneCount", type: .nonNull(.scalar(Int.self))),
-                    GraphQLField("todoPercentage", type: .nonNull(.scalar(Double.self))),
-                    GraphQLField("todoCount", type: .nonNull(.scalar(Int.self))),
-                    GraphQLField("inProgressPercentage", type: .nonNull(.scalar(Double.self))),
-                    GraphQLField("inProgressCount", type: .nonNull(.scalar(Int.self))),
-                    GraphQLField("enabled", type: .nonNull(.scalar(Bool.self))),
-                  ]
-                }
-
-                public private(set) var resultMap: ResultMap
-
-                public init(unsafeResultMap: ResultMap) {
-                  self.resultMap = unsafeResultMap
-                }
-
-                public init(donePercentage: Double, doneCount: Int, todoPercentage: Double, todoCount: Int, inProgressPercentage: Double, inProgressCount: Int, enabled: Bool) {
-                  self.init(unsafeResultMap: ["__typename": "ProjectProgress", "donePercentage": donePercentage, "doneCount": doneCount, "todoPercentage": todoPercentage, "todoCount": todoCount, "inProgressPercentage": inProgressPercentage, "inProgressCount": inProgressCount, "enabled": enabled])
-                }
-
-                public var __typename: String {
-                  get {
-                    return resultMap["__typename"]! as! String
-                  }
-                  set {
-                    resultMap.updateValue(newValue, forKey: "__typename")
-                  }
-                }
-
-                /// The percentage of done cards.
-                @available(*, deprecated, message: "Projects (classic) is being deprecated in favor of the new Projects experience, see: https://github.blog/changelog/2024-05-23-sunset-notice-projects-classic/. Removal on 2025-04-01 UTC.")
-                public var donePercentage: Double {
-                  get {
-                    return resultMap["donePercentage"]! as! Double
-                  }
-                  set {
-                    resultMap.updateValue(newValue, forKey: "donePercentage")
-                  }
-                }
-
-                /// The number of done cards.
-                @available(*, deprecated, message: "Projects (classic) is being deprecated in favor of the new Projects experience, see: https://github.blog/changelog/2024-05-23-sunset-notice-projects-classic/. Removal on 2025-04-01 UTC.")
-                public var doneCount: Int {
-                  get {
-                    return resultMap["doneCount"]! as! Int
-                  }
-                  set {
-                    resultMap.updateValue(newValue, forKey: "doneCount")
-                  }
-                }
-
-                /// The percentage of to do cards.
-                @available(*, deprecated, message: "Projects (classic) is being deprecated in favor of the new Projects experience, see: https://github.blog/changelog/2024-05-23-sunset-notice-projects-classic/. Removal on 2025-04-01 UTC.")
-                public var todoPercentage: Double {
-                  get {
-                    return resultMap["todoPercentage"]! as! Double
-                  }
-                  set {
-                    resultMap.updateValue(newValue, forKey: "todoPercentage")
-                  }
-                }
-
-                /// The number of to do cards.
-                @available(*, deprecated, message: "Projects (classic) is being deprecated in favor of the new Projects experience, see: https://github.blog/changelog/2024-05-23-sunset-notice-projects-classic/. Removal on 2025-04-01 UTC.")
-                public var todoCount: Int {
-                  get {
-                    return resultMap["todoCount"]! as! Int
-                  }
-                  set {
-                    resultMap.updateValue(newValue, forKey: "todoCount")
-                  }
-                }
-
-                /// The percentage of in-progress cards.
-                @available(*, deprecated, message: "Projects (classic) is being deprecated in favor of the new Projects experience, see: https://github.blog/changelog/2024-05-23-sunset-notice-projects-classic/. Removal on 2025-04-01 UTC.")
-                public var inProgressPercentage: Double {
-                  get {
-                    return resultMap["inProgressPercentage"]! as! Double
-                  }
-                  set {
-                    resultMap.updateValue(newValue, forKey: "inProgressPercentage")
-                  }
-                }
-
-                /// The number of in-progress cards.
-                @available(*, deprecated, message: "Projects (classic) is being deprecated in favor of the new Projects experience, see: https://github.blog/changelog/2024-05-23-sunset-notice-projects-classic/. Removal on 2025-04-01 UTC.")
-                public var inProgressCount: Int {
-                  get {
-                    return resultMap["inProgressCount"]! as! Int
-                  }
-                  set {
-                    resultMap.updateValue(newValue, forKey: "inProgressCount")
-                  }
-                }
-
-                /// Whether progress tracking is enabled and cards with purpose exist for this project
-                @available(*, deprecated, message: "Projects (classic) is being deprecated in favor of the new Projects experience, see: https://github.blog/changelog/2024-05-23-sunset-notice-projects-classic/. Removal on 2025-04-01 UTC.")
-                public var enabled: Bool {
-                  get {
-                    return resultMap["enabled"]! as! Bool
-                  }
-                  set {
-                    resultMap.updateValue(newValue, forKey: "enabled")
-                  }
-                }
               }
             }
           }

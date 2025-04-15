@@ -26,13 +26,18 @@ query viewerPullRequest($state:[PullRequestState!],$after:String) {
 }
 
 # 查询我的top repositories
-query viewerTopRepositories($after:String){
-  viewer{
-    topRepositories(first:20,orderBy:{field:UPDATED_AT,direction:DESC},after:$after){
-      pageInfo{
+query viewerTopRepositories($after: String) {
+  viewer {
+    topRepositories(
+      first: 20
+      orderBy: { field: UPDATED_AT, direction: DESC }
+      after: $after
+    ) {
+      pageInfo {
         endCursor
+        hasNextPage
       }
-      nodes{
+      nodes {
         name
         nameWithOwner
         isPrivate
@@ -40,11 +45,11 @@ query viewerTopRepositories($after:String){
         forkCount
         stargazerCount
         isInOrganization
-        owner{
+        owner {
           login
-          avatarUrl(size:150)
+          avatarUrl(size: 150)
         }
-        primaryLanguage{
+        primaryLanguage {
           name
         }
         url
@@ -1607,32 +1612,7 @@ query issueEditInfo($owner: String!, $name: String!, $number: Int!) {
         closedAt
         progressPercentage
       }
-      
-      # 项目 最多5个
-      projectCards(first:5) {
-        totalCount
-        nodes {
-          column{
-            name 
-            purpose
-          }
-          project{
-            name 
-            progress{
-              donePercentage
-              doneCount
-              todoPercentage
-              todoCount
-              inProgressPercentage
-              inProgressCount
-              enabled
-            }
-            state
-          }
-          url
-        }
-      }
-      
+            
       # 操作
       locked
       # 是否能够评论
