@@ -93,11 +93,11 @@ typealias ZLGithubHttpClientBlock = (Bool, Any?,  ZLGithubRequestErrorModel?) ->
                 if  let response = dataResponse.response,
                     let statusCode = dataResponse.response?.statusCode {
                     
-                    if statusCode == 401 {
-                        ZLMainThreadDispatch({
-                            NotificationCenter.default.post(name: NSNotification.Name(rawValue: "ZLGithubTokenInvalid_Notification"), object: nil)
-                        })
-                    }
+//                    if statusCode == 401 {
+//                        ZLMainThreadDispatch({
+//                            NotificationCenter.default.post(name: NSNotification.Name(rawValue: "ZLGithubTokenInvalid_Notification"), object: nil)
+//                        })
+//                    }
                     
                     if api.successStatusCodes.contains(statusCode) {
                         

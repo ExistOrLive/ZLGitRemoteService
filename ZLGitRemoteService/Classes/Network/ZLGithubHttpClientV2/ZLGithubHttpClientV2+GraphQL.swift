@@ -37,11 +37,11 @@ private class ZLTokenInvalidDealIntercetor : ApolloInterceptor {
         completion: @escaping (Result<GraphQLResult<Operation.Data>, Error>) -> Void){
        
         if let httpResponse = response?.httpResponse{
-            if httpResponse.statusCode == 401 {
-                ZLMainThreadDispatch({
-                    NotificationCenter.default.post(name: NSNotification.Name(rawValue: "ZLGithubTokenInvalid_Notification"), object: nil)
-                })
-            }
+//            if httpResponse.statusCode == 401 {
+//                ZLMainThreadDispatch({
+//                    NotificationCenter.default.post(name: NSNotification.Name(rawValue: "ZLGithubTokenInvalid_Notification"), object: nil)
+//                })
+//            }
         }
         chain.proceedAsync(request: request, response: response, completion: completion)
     }
