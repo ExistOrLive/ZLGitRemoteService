@@ -12,6 +12,9 @@
 #import <MJExtension/MJExtension.h>
 #import "ZLGitRemoteService-Swift.h"
 
+#define APP_GROUP_ID @"group.com.zm.ZLGithubClient"
+
+#define ZLSharedDataManager_Version 1
 
 #define ZLKeyChainService @"com.zm.fbd34c5a34be72f66c35.ZLGitHubClient"
 #define ZLKeyChainServiceFixRepos @"com.zm.fbd34c5a34be72f66c35.ZLGitHubClient.fixrepo"
@@ -44,10 +47,23 @@
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         manager = [[ZLSharedDataManager alloc] init];
+        [manager dataMigration];
     });
     
     return manager;
 }
+
+- (void) dataMigration {
+    
+    /// 在 App Group 中保存 token
+    NSString * token = [[NSUserDefaults standardUserDefaults] objectForKey:ZLAccessTokenKey];
+    if(token) {
+        NSUserDefaults *sharedDefaults = [[NSUserDefaults alloc] initWithSuiteName:APP_GROUP_ID];
+        [sharedDefaults setObject:token forKey:ZLAccessTokenKey];
+        [sharedDefaults synchronize];   /// 迁移到APP Group 中
+    }
+}
+
 
 #pragma mark -
 
@@ -94,6 +110,11 @@
     _githubAccessToken = githubAccessToken;
     [[NSUserDefaults standardUserDefaults] setObject:githubAccessToken forKey:ZLAccessTokenKey];
     [[NSUserDefaults standardUserDefaults] synchronize];
+    
+    /// app group 中同步数据
+    NSUserDefaults *sharedDefaults = [[NSUserDefaults alloc] initWithSuiteName:APP_GROUP_ID];
+    [sharedDefaults setObject:githubAccessToken forKey:ZLAccessTokenKey];
+    [sharedDefaults synchronize];
 }
 
 - (NSString *) githubAccessToken{
