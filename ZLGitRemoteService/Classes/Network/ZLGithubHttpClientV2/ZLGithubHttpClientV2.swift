@@ -199,7 +199,7 @@ public extension ZLGithubHttpClientV2 {
         let date = Date(timeIntervalSince1970: 0)
         WKWebsiteDataStore.default().removeData(ofTypes: set, modifiedSince: date, completionHandler: {})
         
-        if let url = URL(string: ZLGithubAPISwift.GitHubAPIURL),
+        if let url = URL(string: "https://github.com"),
            let cookies = HTTPCookieStorage.shared.cookies(for: url) {
             for cookie in  cookies {
                 HTTPCookieStorage.shared.deleteCookie(cookie)
