@@ -10,6 +10,7 @@
 #import "ZLDataBaseSql.h"
 #import <FMDB/fmdb/FMDB.h>
 #import "ZLGitRemoteService-Swift.h"
+@import ZLUtilities;
 
 
 @interface ZLDataBaseManager()

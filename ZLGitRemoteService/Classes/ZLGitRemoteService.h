@@ -40,8 +40,6 @@ FOUNDATION_EXPORT const unsigned char ZLServiceFrameworkVersionString[];
 #import "ZLLogModuleProtocol.h"
 #import "ZLDBModuleProtocol.h"
 #import "ZLSharedDataManager.h"
-//#import "ZLBuglyManager.h"
-#import "ZLDeviceInfo.h"
 
 #import "ZLBaseServiceModel.h"
 #import "ZLEventServiceHeader.h"

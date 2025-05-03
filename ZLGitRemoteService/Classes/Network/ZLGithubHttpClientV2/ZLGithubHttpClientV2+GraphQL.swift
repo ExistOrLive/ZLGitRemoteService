@@ -9,6 +9,7 @@
 import Foundation
 import Apollo
 import Kanna
+import ZLUtilities
 
 public typealias GithubResponseSwift = (Bool,Any?,String) -> Void
 

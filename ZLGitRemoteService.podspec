@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'ZLGitRemoteService'
-  s.version          = '1.4.0'
+  s.version          = '1.7.0'
   s.summary          = 'A short description of ZLGitRemoteService.'
 
 # This description is used to generate tags and improve search results.
@@ -29,6 +29,7 @@ Pod::Spec.new do |s|
   s.ios.deployment_target = '11.0'
   s.module_name = 'ZLGitRemoteService'
   s.source_files = 'ZLGitRemoteService/Classes/**/*.{h,m,swift}'
+  s.resource_bundle = {"ZLGitRemoteService.privacy"=>"Pod/Privacy/ZLGitRemoteService/PrivacyInfo.xcprivacy"}
   s.prefix_header_file= 'ZLGitRemoteService/Classes/ZLGitRemoteService-prefix.pch'
   s.public_header_files = ['ZLGitRemoteService/Classes/ZLGitRemoteSerivce_GeneralDefine.h',
                            'ZLGitRemoteService/Classes/ZLGitRemoteService.h',
@@ -51,9 +52,6 @@ Pod::Spec.new do |s|
 
   # s.public_header_files = 'Pod/Classes/**/*.h'
   # s.frameworks = 'UIKit', 'MapKit'
-  s.dependency 'Umbrella'
-  s.dependency 'Umbrella/Firebase'
-  s.dependency 'Firebase/Analytics'
   s.dependency 'FMDB'
   s.dependency 'CocoaLumberjack'
   s.dependency 'MJExtension'

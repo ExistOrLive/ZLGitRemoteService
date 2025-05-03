@@ -318,7 +318,7 @@ extension ZLGithubAPISwift {
         do {
             let htmlDoc = try HTML(html:data, encoding: .utf8 )
     
-            let trendConfigDic = ZLAGC().configAsJsonObject(for: "TrendRepoConfig",defaultValue: ZLGithubAPISwift.trendingRepoConfig)
+            let trendConfigDic = ZLRCM().configAsJsonObject(for: "TrendRepoConfig",defaultValue: ZLGithubAPISwift.trendingRepoConfig)
             guard let trendConfig = TrendingRepoConfig(JSON: trendConfigDic) else {
                 return repos
             }
@@ -404,7 +404,7 @@ extension ZLGithubAPISwift {
         do {
             let htmlDoc = try HTML(html:data, encoding: .utf8 )
             
-            let trendConfigDic = ZLAGC().configAsJsonObject(for: "TrendUserConfig",defaultValue: ZLGithubAPISwift.trendingUserConfig)
+            let trendConfigDic = ZLRCM().configAsJsonObject(for: "TrendUserConfig",defaultValue: ZLGithubAPISwift.trendingUserConfig)
             guard let trendConfig = TrendingUserConfig(JSON: trendConfigDic) else {
                 return users
             }
