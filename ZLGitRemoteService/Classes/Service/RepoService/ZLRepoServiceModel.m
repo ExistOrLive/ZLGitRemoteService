@@ -204,6 +204,32 @@
                                                                response:response];
 }
 
+- (void) getRepoCommitInfoWithLogin:(NSString *) login
+                           repoName:(NSString *) repoName
+                                ref:(NSString *) ref
+                       serialNumber:(NSString *) serialNumber
+                     completeHandle:(void(^)(ZLOperationResultModel *)) handle
+{
+    GithubResponse response = ^(BOOL  result, id responseObject, NSString * serialNumber)
+    {
+        ZLOperationResultModel * repoResultModel = [[ZLOperationResultModel alloc] init];
+        repoResultModel.result = result;
+        repoResultModel.serialNumber = serialNumber;
+        repoResultModel.data = responseObject;
+        
+        if(handle)
+        {
+            ZLMainThreadDispatch(handle(repoResultModel);)
+        }
+    };
+    
+    [[ZLGithubHttpClientV2 defaultClient] getCommitInfoForRepoWithLogin:login
+                                                               repoName:repoName
+                                                                    ref:ref
+                                                           serialNumber:serialNumber response:response];
+}
+
+
 
 /**
  * @brief 根据repo 获取branch

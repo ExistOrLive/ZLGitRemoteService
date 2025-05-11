@@ -14,6 +14,10 @@
 
 @end
 
+@implementation ZLGithubCommitStatModel
+
+@end
+
 
 @implementation ZLGithubCommitModel
 

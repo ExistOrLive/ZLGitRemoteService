@@ -259,6 +259,20 @@ public extension ZLGithubHttpClientV2 {
         self.requestGithubAPI(api: api, serialNumber: serialNumber, responseBlock: response)
     }
     
+    ///  获取仓库某个commit的信息
+    ///  - Parameters
+    ///    - login : existorlive
+    ///    - repoName: 仓库名 githubclient
+    ///    - ref:  commit sha
+    @objc func getCommitInfoForRepo(login: String,
+                                 repoName: String,
+                                 ref: String,
+                                 serialNumber: String,
+                                 response: @escaping GithubResponseSwift) {
+        let api = ZLGithubAPISwift.getCommitInfoForRepo(login: login, repoName: repoName, ref: ref)
+        self.requestGithubAPI(api: api, serialNumber: serialNumber, responseBlock: response)
+    }
+    
     ///  获取仓库的分支列表
     ///  - Parameters
     ///    - fullName : 仓库名 existorlive/githubclient

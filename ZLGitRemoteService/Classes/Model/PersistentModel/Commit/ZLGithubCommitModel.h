@@ -131,6 +131,17 @@ NS_ASSUME_NONNULL_BEGIN
 
 @end
 
+@interface ZLGithubCommitStatModel : ZLBaseObject
+
+@property (nonatomic,assign) int additions;
+
+@property (nonatomic,assign) int deletions;
+
+@property (nonatomic,assign) int total;
+
+
+@end
+
 
 
 @interface ZLGithubCommitModel : ZLBaseObject
@@ -154,6 +165,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property(nonatomic, strong, nullable) ZLGithubUserBriefModel * author;               // 所有者
  
 @property(nonatomic, strong, nullable) ZLGithubUserBriefModel * committer;            // 提交者
+
+@property(nonatomic, strong, nullable) ZLGithubCommitStatModel * stats;            //合计修改信息
 
 @property(nonatomic, strong) NSArray<ZLGithubFileModel *> * files;          // 修改的文件
 
