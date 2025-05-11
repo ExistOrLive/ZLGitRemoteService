@@ -571,7 +571,44 @@ public extension ZLGithubHttpClientV2{
         let query = RepoDiscussionsQuery(login: login, name: repoName, pageCount: per_page, after: after, state: nil, orderBy: DiscussionOrder(direction: .desc, field: .updatedAt))
         self.baseQuery(query: query, serialNumber: serialNumber, block: block)
     }
-
+    
+    //MARK: Releases
+    /**
+     * @param login
+     * @param repoName
+     *  查询仓库的release 列表
+     */
+    @objc func getRepoReleaseList(login : String,
+                                  repoName : String,
+                                  per_page: Int,
+                                  after: String?,
+                                  serialNumber: String,
+                                  block: @escaping GithubResponseSwift) {
+        let query = RepoReleasesQuery(login: login,
+                                      name: repoName,
+                                      pageCount: per_page,
+                                      after: after,
+                                      orderBy: ReleaseOrder(direction: .desc,
+                                                            field: .createdAt))
+        self.baseQuery(query: query, serialNumber: serialNumber, block: block)
+    }
+    
+    /**
+     * @param login
+     * @param repoName
+     *  @param tagName
+     *  查询仓库的release 列表
+     */
+    @objc func getRepoReleaseInfo(login : String,
+                                  repoName: String,
+                                  tagName: String,
+                                  serialNumber: String,
+                                  block: @escaping GithubResponseSwift) {
+        let query = RepoReleaseInfoQuery(login: login,
+                                         name: repoName,
+                                         tagName: tagName)
+        self.baseQuery(query: query, serialNumber: serialNumber, block: block)
+    }
     
     //MARK: userinfo
     

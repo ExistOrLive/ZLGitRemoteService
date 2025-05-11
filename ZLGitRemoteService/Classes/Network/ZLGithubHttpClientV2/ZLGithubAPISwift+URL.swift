@@ -115,6 +115,8 @@ extension ZLGithubAPISwift {
             return ZLGithubAPISwift.GitHubAPIURL + "/seach/users"
         case .searchRepo:
             return ZLGithubAPISwift.GitHubAPIURL + "/search/repositories"
+        case .getHtmlURL(api: let api):
+            return api
         }
     }
 }

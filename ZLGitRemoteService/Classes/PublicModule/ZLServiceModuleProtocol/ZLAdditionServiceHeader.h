@@ -48,6 +48,13 @@ static const NSNotificationName _Nonnull ZLGithubConfigUpdate_Notification = @"Z
                        completeHandle:(void(^_Nonnull)(ZLOperationResultModel * _Nonnull)) handle;
 
 
+/**
+* @brief 获取API接口的htmlStr
+*
+**/
+- (void) getHtmlURLWithApi:(NSString * _Nonnull) api
+              serialNumber:(NSString * _Nonnull) serialNumber
+            completeHandle:(void(^_Nonnull)(ZLOperationResultModel * _Nonnull)) handle;
 
 #pragma mark - config
 

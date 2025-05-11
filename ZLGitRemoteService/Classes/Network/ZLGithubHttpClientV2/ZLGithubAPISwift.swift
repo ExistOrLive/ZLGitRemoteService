@@ -382,6 +382,9 @@ enum ZLGithubAPISwift {
     ///  将代码渲染为markdown
     case renderCodeToMarkdown(code: String)
     
+    /// 获取html API
+    case getHtmlURL(api: String)
+    
     
     
     

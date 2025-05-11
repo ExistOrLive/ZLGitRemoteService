@@ -99,6 +99,29 @@
 }
 
 
+- (void) getHtmlURLWithApi:(NSString *) api
+              serialNumber:(NSString *) serialNumber
+            completeHandle:(void(^)(ZLOperationResultModel *)) handle {
+    
+    GithubResponse responseBlock = ^(BOOL result, id _Nullable responseObject, NSString * serialNumber) {
+        
+        ZLOperationResultModel * resultModel = [[ZLOperationResultModel alloc] init];
+        resultModel.result = result;
+        resultModel.serialNumber = serialNumber;
+        resultModel.data = responseObject;
+        
+        if(handle){
+            ZLMainThreadDispatch(handle(resultModel);)
+        }
+    };
+    
+    [[ZLGithubHttpClientV2 defaultClient] getHtmlURLWithApi:api
+                                               serialNumber:serialNumber
+                                                   response:responseBlock];
+    
+    
+}
+
 #pragma mark - config
 
 /**

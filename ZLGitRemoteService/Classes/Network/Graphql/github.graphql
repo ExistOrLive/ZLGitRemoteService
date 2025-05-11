@@ -1831,14 +1831,90 @@ query repoReleases(
       }
       totalCount
       nodes {
+        __typename
         name
+        tagName
         publishedAt
+        createdAt
+        updatedAt
         isDraft
         isLatest
         isPrerelease
         id
-        tagName
-        name
+        url
+        author {
+          login
+          avatarUrl
+        }
+        repository {
+          name
+          owner {
+            login
+            avatarUrl
+          }
+        }
+      }
+    }
+  }
+}
+
+# 查询仓库某个release的信息
+query repoReleaseInfo($login: String!, $name: String!, $tagName: String!) {
+  repository(owner: $login, name: $name) {
+    __typename
+    release(tagName: $tagName) {
+      name
+      tagName
+      tagCommit {
+        commitUrl
+        url
+        message
+        id
+        oid
+      }
+      publishedAt
+      createdAt
+      updatedAt
+      isDraft
+      isLatest
+      isPrerelease
+      id
+      url
+      author {
+        login
+        avatarUrl
+      }
+      repository {
+        nameWithOwner
+        owner {
+          login
+          avatarUrl
+        }
+      }
+      descriptionHTML
+      viewerCanReact
+      reactions(first: 50, orderBy: { field: CREATED_AT, direction: DESC }) {
+        totalCount
+        nodes {
+          content
+          reactable {
+            viewerCanReact
+          }
+          user {
+            login
+          }
+        }
+      }
+      releaseAssets(first: 50) {
+        totalCount
+        nodes {
+          contentType
+          downloadUrl
+          downloadCount
+          createdAt
+          updatedAt
+          name
+        }
       }
     }
   }

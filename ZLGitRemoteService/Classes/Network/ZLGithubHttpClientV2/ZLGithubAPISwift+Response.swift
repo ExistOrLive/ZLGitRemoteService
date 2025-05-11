@@ -227,7 +227,7 @@ extension ZLGithubAPISwift {
                                                                 response: response,
                                                                 data: data)
             }))
-        case .getLanguagesInfoForRepo:
+        case .getLanguagesInfoForRepo,.getHtmlURL:
             return .jsonObject
         case .renderCodeToMarkdown:
             return .string

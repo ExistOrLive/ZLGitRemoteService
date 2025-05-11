@@ -716,4 +716,15 @@ public extension ZLGithubHttpClientV2 {
                                               per_page: per_page)
         self.requestGithubAPI(api: api, serialNumber: serialNumber, responseBlock: response)
     }
+    
+    
+    /// 获取指定API的html url 
+    @objc func getHtmlURL(api: String,
+                          serialNumber: String,
+                          response: @escaping GithubResponseSwift){
+        
+        let api = ZLGithubAPISwift.getHtmlURL(api: api)
+        self.requestGithubAPI(api: api, serialNumber: serialNumber, responseBlock: response)
+        
+    }
 }

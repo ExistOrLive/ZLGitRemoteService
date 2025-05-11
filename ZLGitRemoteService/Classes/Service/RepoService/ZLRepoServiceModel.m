@@ -928,4 +928,62 @@
                                                                serialNumber:serialNumber response:response];
 }
 
+
+#pragma mark - Releases
+
+- (void) getRepoReleaseLitsWithLogin:(NSString *) login
+                            repoName:(NSString *) repoName
+                             per_page:(NSInteger) per_page
+                               after:(NSString *) after
+                         serialNumber:(NSString *) serialNumber
+                       completeHandle:(void(^)(ZLOperationResultModel *)) handle{
+    
+    GithubResponse response = ^(BOOL  result, id responseObject, NSString * serialNumber)
+    {
+        ZLOperationResultModel * repoResultModel = [[ZLOperationResultModel alloc] init];
+        repoResultModel.result = result;
+        repoResultModel.serialNumber = serialNumber;
+        repoResultModel.data = responseObject;
+        
+        if(handle)
+        {
+            ZLMainThreadDispatch(handle(repoResultModel);)
+        }
+    };
+    
+    [[ZLGithubHttpClientV2 defaultClient] getRepoReleaseListWithLogin:login
+                                                             repoName:repoName
+                                                             per_page:per_page
+                                                                after:after
+                                                         serialNumber:serialNumber
+                                                                block:response];
+}
+
+
+- (void) getRepoReleaseInfoWithLogin:(NSString *) login
+                            repoName:(NSString *) repoName
+                             tagName:(NSString *) tagName
+                         serialNumber:(NSString *) serialNumber
+                       completeHandle:(void(^)(ZLOperationResultModel *)) handle{
+    
+    GithubResponse response = ^(BOOL  result, id responseObject, NSString * serialNumber)
+    {
+        ZLOperationResultModel * repoResultModel = [[ZLOperationResultModel alloc] init];
+        repoResultModel.result = result;
+        repoResultModel.serialNumber = serialNumber;
+        repoResultModel.data = responseObject;
+        
+        if(handle)
+        {
+            ZLMainThreadDispatch(handle(repoResultModel);)
+        }
+    };
+    
+    [[ZLGithubHttpClientV2 defaultClient] getRepoReleaseInfoWithLogin:login
+                                                             repoName:repoName
+                                                              tagName:tagName
+                                                         serialNumber:serialNumber
+                                                                block:response];
+}
+
 @end

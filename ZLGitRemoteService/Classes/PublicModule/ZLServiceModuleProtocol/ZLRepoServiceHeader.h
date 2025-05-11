@@ -257,6 +257,22 @@
                                  serialNumber:(NSString * _Nonnull) serialNumber
                                completeHandle:(void(^ _Nonnull)(ZLOperationResultModel *  _Nonnull)) handle;
 
+#pragma mark - Releases
+
+- (void) getRepoReleaseLitsWithLogin:(NSString * _Nonnull) login
+                            repoName:(NSString * _Nonnull) repoName
+                             per_page:(NSInteger) per_page
+                               after:(NSString *) after
+                         serialNumber:(NSString * _Nonnull) serialNumber
+                      completeHandle:(void(^ _Nonnull)(ZLOperationResultModel * _Nonnull)) handle;
+
+
+- (void) getRepoReleaseInfoWithLogin:(NSString * _Nonnull) login
+                            repoName:(NSString * _Nonnull) repoName
+                             tagName:(NSString * _Nonnull) tagName
+                         serialNumber:(NSString *) serialNumber
+                      completeHandle:(void(^ _Nonnull)(ZLOperationResultModel * _Nonnull)) handle;
+
 @end
 
 
