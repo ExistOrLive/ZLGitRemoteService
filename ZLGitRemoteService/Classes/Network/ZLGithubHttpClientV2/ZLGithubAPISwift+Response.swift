@@ -105,6 +105,8 @@ extension ZLGithubAPISwift {
             return .object(parseWrapper: ZLGithubAPIObjectTypeWrapper<ZLGithubCommitModel>(isArray: true))
         case .getCommitInfoForRepo:
             return .object(parseWrapper: ZLGithubAPIObjectTypeWrapper<ZLGithubCommitModel>())
+        case .getCommitDiffForRepo:
+            return .string
         case .getBranchsForRepo:
             return .object(parseWrapper: ZLGithubAPIObjectTypeWrapper<ZLGithubRepositoryBranchModel>(isArray: true))
         case .getIssuesForRepo:

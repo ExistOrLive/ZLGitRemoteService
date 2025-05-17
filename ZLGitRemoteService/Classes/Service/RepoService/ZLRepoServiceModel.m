@@ -229,6 +229,30 @@
                                                            serialNumber:serialNumber response:response];
 }
 
+- (void) getRepoCommitDiffWithLogin:(NSString * _Nonnull) login
+                           repoName:(NSString * _Nonnull) repoName
+                                ref:(NSString * _Nonnull) ref
+                       serialNumber:(NSString *) serialNumber
+                     completeHandle:(void(^ _Nonnull)(ZLOperationResultModel * _Nonnull)) handle {
+    GithubResponse response = ^(BOOL  result, id responseObject, NSString * serialNumber)
+    {
+        ZLOperationResultModel * repoResultModel = [[ZLOperationResultModel alloc] init];
+        repoResultModel.result = result;
+        repoResultModel.serialNumber = serialNumber;
+        repoResultModel.data = responseObject;
+        
+        if(handle)
+        {
+            ZLMainThreadDispatch(handle(repoResultModel);)
+        }
+    };
+    
+    [[ZLGithubHttpClientV2 defaultClient] getCommitDiffForRepoWithLogin:login
+                                                               repoName:repoName
+                                                                    ref:ref
+                                                           serialNumber:serialNumber response:response];
+}
+
 
 
 /**

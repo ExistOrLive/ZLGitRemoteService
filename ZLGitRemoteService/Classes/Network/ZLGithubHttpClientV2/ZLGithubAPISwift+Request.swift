@@ -97,6 +97,8 @@ extension ZLGithubAPISwift {
         case .getTrendingDevelopers,
                 .getTrendingRepos:
             return ["Accept": "application/html, text/html"]
+        case .getCommitDiffForRepo:
+            return ["Accept": "application/vnd.github.diff"]
         default:
             return [:]
         }

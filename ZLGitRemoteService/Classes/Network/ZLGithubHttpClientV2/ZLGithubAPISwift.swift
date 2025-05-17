@@ -183,6 +183,15 @@ enum ZLGithubAPISwift {
     case getCommitInfoForRepo(login: String,
                               repoName: String,
                               ref: String)
+    
+    ///  获取仓库的commit diff 信息
+    ///  - Parameters
+    ///    - login : existorlive
+    ///    - repoName: 仓库名 githubclient
+    ///    - ref:  commit sha
+    case getCommitDiffForRepo(login: String,
+                              repoName: String,
+                              ref: String)
     ///  获取仓库的分支列表
     ///  - Parameters
     ///    - fullName : 仓库名 existorlive/githubclient

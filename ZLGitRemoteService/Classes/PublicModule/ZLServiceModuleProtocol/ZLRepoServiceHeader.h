@@ -101,6 +101,20 @@
                      completeHandle:(void(^ _Nonnull)(ZLOperationResultModel * _Nonnull)) handle;
 
 /**
+ * @brief 获取commit 的diff信息
+ * @param login octocat/Hello-World
+ * @param repoName octocat/Hello-World
+ * @param ref sha
+ * @param serialNumber 流水号
+ **/
+
+- (void) getRepoCommitDiffWithLogin:(NSString * _Nonnull) login
+                           repoName:(NSString * _Nonnull) repoName
+                                ref:(NSString * _Nonnull) ref
+                       serialNumber:(NSString *) serialNumber
+                     completeHandle:(void(^ _Nonnull)(ZLOperationResultModel * _Nonnull)) handle;
+
+/**
  * @brief 根据repo 获取branch
  * @param fullName octocat/Hello-World
  * @param serialNumber 流水号
