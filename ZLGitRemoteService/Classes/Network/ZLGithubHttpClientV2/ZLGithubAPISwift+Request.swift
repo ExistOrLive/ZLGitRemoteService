@@ -150,7 +150,8 @@ extension ZLGithubAPISwift {
                 .getWorkflowsForRepo(_ , let page, let per_page),
                 .getWorkflowRunsForRepo(_, _, let page, let per_page),
                 .getEventsForUser(_, let page, let per_page),
-                .getReceivedEventsForUser(_, let page, let per_page):
+                .getReceivedEventsForUser(_, let page, let per_page),
+                .getCommitCompareForRepo(_, _, _, _, let page,let per_page):
             params = ["page": page,
                       "per_page": per_page]
         case .getRepoReadMeInfo(_,let ref,_):

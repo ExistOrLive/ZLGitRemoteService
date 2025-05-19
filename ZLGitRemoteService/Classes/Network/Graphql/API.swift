@@ -13012,6 +13012,7 @@ public final class PrInfoQuery: GraphQLQuery {
       repository(owner: $owner, name: $name) {
         __typename
         nameWithOwner
+        name
         owner {
           __typename
           login
@@ -13031,6 +13032,8 @@ public final class PrInfoQuery: GraphQLQuery {
           state
           baseRefName
           headRefName
+          headRefOid
+          baseRefOid
           headRepositoryOwner {
             __typename
             login
@@ -13628,6 +13631,7 @@ public final class PrInfoQuery: GraphQLQuery {
         return [
           GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
           GraphQLField("nameWithOwner", type: .nonNull(.scalar(String.self))),
+          GraphQLField("name", type: .nonNull(.scalar(String.self))),
           GraphQLField("owner", type: .nonNull(.object(Owner.selections))),
           GraphQLField("pullRequest", arguments: ["number": GraphQLVariable("number")], type: .object(PullRequest.selections)),
         ]
@@ -13639,8 +13643,8 @@ public final class PrInfoQuery: GraphQLQuery {
         self.resultMap = unsafeResultMap
       }
 
-      public init(nameWithOwner: String, owner: Owner, pullRequest: PullRequest? = nil) {
-        self.init(unsafeResultMap: ["__typename": "Repository", "nameWithOwner": nameWithOwner, "owner": owner.resultMap, "pullRequest": pullRequest.flatMap { (value: PullRequest) -> ResultMap in value.resultMap }])
+      public init(nameWithOwner: String, name: String, owner: Owner, pullRequest: PullRequest? = nil) {
+        self.init(unsafeResultMap: ["__typename": "Repository", "nameWithOwner": nameWithOwner, "name": name, "owner": owner.resultMap, "pullRequest": pullRequest.flatMap { (value: PullRequest) -> ResultMap in value.resultMap }])
       }
 
       public var __typename: String {
@@ -13659,6 +13663,16 @@ public final class PrInfoQuery: GraphQLQuery {
         }
         set {
           resultMap.updateValue(newValue, forKey: "nameWithOwner")
+        }
+      }
+
+      /// The name of the repository.
+      public var name: String {
+        get {
+          return resultMap["name"]! as! String
+        }
+        set {
+          resultMap.updateValue(newValue, forKey: "name")
         }
       }
 
@@ -13751,6 +13765,8 @@ public final class PrInfoQuery: GraphQLQuery {
             GraphQLField("state", type: .nonNull(.scalar(PullRequestState.self))),
             GraphQLField("baseRefName", type: .nonNull(.scalar(String.self))),
             GraphQLField("headRefName", type: .nonNull(.scalar(String.self))),
+            GraphQLField("headRefOid", type: .nonNull(.scalar(String.self))),
+            GraphQLField("baseRefOid", type: .nonNull(.scalar(String.self))),
             GraphQLField("headRepositoryOwner", type: .object(HeadRepositoryOwner.selections)),
             GraphQLField("baseRepository", type: .object(BaseRepository.selections)),
             GraphQLField("headRepository", type: .object(HeadRepository.selections)),
@@ -13772,8 +13788,8 @@ public final class PrInfoQuery: GraphQLQuery {
           self.resultMap = unsafeResultMap
         }
 
-        public init(title: String, number: Int, author: Author? = nil, bodyText: String, bodyHtml: String, state: PullRequestState, baseRefName: String, headRefName: String, headRepositoryOwner: HeadRepositoryOwner? = nil, baseRepository: BaseRepository? = nil, headRepository: HeadRepository? = nil, changedFiles: Int, additions: Int, deletions: Int, url: String, commits: Commit, closed: Bool, closedAt: String? = nil, createdAt: String, timelineItems: TimelineItem) {
-          self.init(unsafeResultMap: ["__typename": "PullRequest", "title": title, "number": number, "author": author.flatMap { (value: Author) -> ResultMap in value.resultMap }, "bodyText": bodyText, "bodyHTML": bodyHtml, "state": state, "baseRefName": baseRefName, "headRefName": headRefName, "headRepositoryOwner": headRepositoryOwner.flatMap { (value: HeadRepositoryOwner) -> ResultMap in value.resultMap }, "baseRepository": baseRepository.flatMap { (value: BaseRepository) -> ResultMap in value.resultMap }, "headRepository": headRepository.flatMap { (value: HeadRepository) -> ResultMap in value.resultMap }, "changedFiles": changedFiles, "additions": additions, "deletions": deletions, "url": url, "commits": commits.resultMap, "closed": closed, "closedAt": closedAt, "createdAt": createdAt, "timelineItems": timelineItems.resultMap])
+        public init(title: String, number: Int, author: Author? = nil, bodyText: String, bodyHtml: String, state: PullRequestState, baseRefName: String, headRefName: String, headRefOid: String, baseRefOid: String, headRepositoryOwner: HeadRepositoryOwner? = nil, baseRepository: BaseRepository? = nil, headRepository: HeadRepository? = nil, changedFiles: Int, additions: Int, deletions: Int, url: String, commits: Commit, closed: Bool, closedAt: String? = nil, createdAt: String, timelineItems: TimelineItem) {
+          self.init(unsafeResultMap: ["__typename": "PullRequest", "title": title, "number": number, "author": author.flatMap { (value: Author) -> ResultMap in value.resultMap }, "bodyText": bodyText, "bodyHTML": bodyHtml, "state": state, "baseRefName": baseRefName, "headRefName": headRefName, "headRefOid": headRefOid, "baseRefOid": baseRefOid, "headRepositoryOwner": headRepositoryOwner.flatMap { (value: HeadRepositoryOwner) -> ResultMap in value.resultMap }, "baseRepository": baseRepository.flatMap { (value: BaseRepository) -> ResultMap in value.resultMap }, "headRepository": headRepository.flatMap { (value: HeadRepository) -> ResultMap in value.resultMap }, "changedFiles": changedFiles, "additions": additions, "deletions": deletions, "url": url, "commits": commits.resultMap, "closed": closed, "closedAt": closedAt, "createdAt": createdAt, "timelineItems": timelineItems.resultMap])
         }
 
         public var __typename: String {
@@ -13862,6 +13878,26 @@ public final class PrInfoQuery: GraphQLQuery {
           }
           set {
             resultMap.updateValue(newValue, forKey: "headRefName")
+          }
+        }
+
+        /// Identifies the oid of the head ref associated with the pull request, even if the ref has been deleted.
+        public var headRefOid: String {
+          get {
+            return resultMap["headRefOid"]! as! String
+          }
+          set {
+            resultMap.updateValue(newValue, forKey: "headRefOid")
+          }
+        }
+
+        /// Identifies the oid of the base ref associated with the pull request, even if the ref has been deleted.
+        public var baseRefOid: String {
+          get {
+            return resultMap["baseRefOid"]! as! String
+          }
+          set {
+            resultMap.updateValue(newValue, forKey: "baseRefOid")
           }
         }
 

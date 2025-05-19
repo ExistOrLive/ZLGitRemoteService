@@ -56,3 +56,14 @@
 }
 
 @end
+
+
+@implementation ZLGithubCompareModel
+
++ (NSDictionary *)mj_objectClassInArray
+{
+    return @{@"files":[ZLGithubFileModel class],
+             @"commits": [ZLGithubCommitModel class]};
+}
+
+@end

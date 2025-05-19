@@ -103,6 +103,8 @@ extension ZLGithubAPISwift {
              return .object(parseWrapper: ZLGithubAPIObjectTypeWrapper<ZLGithubPullRequestModel>(isArray: true))
         case .getCommitsForRepo:
             return .object(parseWrapper: ZLGithubAPIObjectTypeWrapper<ZLGithubCommitModel>(isArray: true))
+        case .getCommitCompareForRepo:
+            return .object(parseWrapper: ZLGithubAPIObjectTypeWrapper<ZLGithubCompareModel>())
         case .getCommitInfoForRepo:
             return .object(parseWrapper: ZLGithubAPIObjectTypeWrapper<ZLGithubCommitModel>())
         case .getCommitDiffForRepo:

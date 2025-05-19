@@ -676,25 +676,28 @@ query issueTimeLineInfo($owner: String!, $name: String!, $number: Int!, $after: 
 query prInfo($owner: String!, $name: String!, $number: Int!, $after: String) {
   repository(owner: $owner, name: $name) {
     nameWithOwner
+    name
     owner {
       login
-      avatarUrl(size:150)
+      avatarUrl(size: 150)
     }
     pullRequest(number: $number) {
       title
       number
       author {
         login
-        avatarUrl(size:150)
+        avatarUrl(size: 150)
       }
       bodyText
       bodyHTML
       state
       baseRefName
       headRefName
+      headRefOid
+      baseRefOid
       headRepositoryOwner {
         login
-        avatarUrl(size:150)
+        avatarUrl(size: 150)
       }
       baseRepository {
         nameWithOwner
@@ -730,7 +733,7 @@ query prInfo($owner: String!, $name: String!, $number: Int!, $after: String) {
             id
             actor {
               login
-              avatarUrl(size:150)
+              avatarUrl(size: 150)
             }
             createdAt
           }
@@ -738,7 +741,7 @@ query prInfo($owner: String!, $name: String!, $number: Int!, $after: String) {
             id
             actor {
               login
-              avatarUrl(size:150)
+              avatarUrl(size: 150)
             }
             assignee {
               __typename
@@ -944,7 +947,7 @@ query prInfo($owner: String!, $name: String!, $number: Int!, $after: String) {
             id
             author {
               login
-              avatarUrl(size:150)
+              avatarUrl(size: 150)
             }
             bodyText
             bodyHTML
@@ -979,7 +982,7 @@ query prInfo($owner: String!, $name: String!, $number: Int!, $after: String) {
           ... on MergedEvent {
             actor {
               login
-              avatarUrl(size:150)
+              avatarUrl(size: 150)
             }
             nullableName: commit {
               abbreviatedOid
@@ -1009,7 +1012,7 @@ query prInfo($owner: String!, $name: String!, $number: Int!, $after: String) {
               messageHeadline
               author {
                 name
-                avatarUrl(size:150)
+                avatarUrl(size: 150)
               }
               abbreviatedOid
               url
@@ -1025,7 +1028,7 @@ query prInfo($owner: String!, $name: String!, $number: Int!, $after: String) {
           ... on PullRequestReview {
             author {
               login
-              avatarUrl(size:150)
+              avatarUrl(size: 150)
             }
           }
           ... on PullRequestReviewThread {
@@ -1142,7 +1145,7 @@ query prInfo($owner: String!, $name: String!, $number: Int!, $after: String) {
             actor {
               login
             }
-            nullname:subject {
+            nullname: subject {
               login
             }
           }

@@ -172,4 +172,28 @@ NS_ASSUME_NONNULL_BEGIN
 
 @end
 
+
+@interface ZLGithubCompareModel : ZLBaseObject
+
+@property(nonatomic, strong) NSString * html_url;
+
+@property(nonatomic, strong) NSString * __nullable url;
+
+@property(nonatomic, strong) ZLGithubCommitModel * base_commit;
+
+@property(nonatomic, strong) ZLGithubCommitModel * merge_base_commit;
+
+@property(nonatomic, strong) NSString * status;
+
+@property(nonatomic, assign) int ahead_by;
+
+@property(nonatomic, assign) int behind_by;
+
+@property(nonatomic, assign) int total_commits;
+
+@property(nonatomic, strong) NSArray<ZLGithubCommitModel *> * commits;
+
+@property(nonatomic, strong) NSArray<ZLGithubFileModel *> * files;          // 修改的文件
+
+@end
 NS_ASSUME_NONNULL_END

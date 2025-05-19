@@ -115,6 +115,20 @@
                      completeHandle:(void(^ _Nonnull)(ZLOperationResultModel * _Nonnull)) handle;
 
 /**
+ * @brief 获取两次commit 的比较信息
+ * @param login octocat/Hello-World
+ * @param repoName octocat/Hello-World
+ * @param ref sha
+ * @param serialNumber 流水号
+ **/
+- (void) getRepoCommitCompareWithLogin:(NSString * _Nonnull) login
+                              repoName:(NSString * _Nonnull) repoName
+                               baseRef:(NSString * _Nonnull) baseRef
+                               headRef:(NSString * _Nonnull) headRef
+                          serialNumber:(NSString *) serialNumber
+                        completeHandle:(void(^ _Nonnull)(ZLOperationResultModel * _Nonnull)) handle;
+
+/**
  * @brief 根据repo 获取branch
  * @param fullName octocat/Hello-World
  * @param serialNumber 流水号

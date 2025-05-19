@@ -58,6 +58,8 @@ extension ZLGithubAPISwift {
         case .getCommitInfoForRepo(let login, let repoName, let ref),
                 .getCommitDiffForRepo(let login,let repoName,let ref):
             return ZLGithubAPISwift.GitHubAPIURL + "/repos/" + login.urlPathEncoding + "/" + repoName.urlPathEncoding + "/commits/" + ref.urlPathEncoding
+        case .getCommitCompareForRepo(let login, let repoName,let baseRef,let headRef, let _, let _):
+            return ZLGithubAPISwift.GitHubAPIURL + "/repos/" + login.urlPathEncoding + "/" + repoName.urlPathEncoding + "/compare/" + baseRef.urlPathEncoding + "..." + headRef.urlPathEncoding
         case .getBranchsForRepo(let fullName):
             return ZLGithubAPISwift.GitHubAPIURL + "/repos/" + fullName.urlPathEncoding + "/branches"
         case .getContributorsForRepo(let fullName):

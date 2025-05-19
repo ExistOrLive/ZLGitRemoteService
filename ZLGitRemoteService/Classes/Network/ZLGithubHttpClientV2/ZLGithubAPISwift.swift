@@ -192,6 +192,20 @@ enum ZLGithubAPISwift {
     case getCommitDiffForRepo(login: String,
                               repoName: String,
                               ref: String)
+    
+    
+    ///  比较两次commit
+    ///  - Parameters
+    ///    - login : existorlive
+    ///    - repoName: 仓库名 githubclient
+    ///    - ref:  commit sha
+    case getCommitCompareForRepo(login: String,
+                                 repoName: String,
+                                 baseRef: String,
+                                 headRef: String,
+                                 page: Int = 1,
+                                 per_page: Int = 30)
+
     ///  获取仓库的分支列表
     ///  - Parameters
     ///    - fullName : 仓库名 existorlive/githubclient

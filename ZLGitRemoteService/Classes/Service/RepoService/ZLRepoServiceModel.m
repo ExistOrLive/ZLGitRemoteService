@@ -33,8 +33,8 @@
  **/
 
 - (ZLGithubRepositoryModelV2 *) getRepoInfoWithFullName:(NSString * _Nonnull) fullName
-                                         serialNumber:(NSString * _Nonnull) serialNumber
-                                       completeHandle:(void(^ _Nonnull)(ZLOperationResultModel *  _Nonnull)) handle{
+                                           serialNumber:(NSString * _Nonnull) serialNumber
+                                         completeHandle:(void(^ _Nonnull)(ZLOperationResultModel *  _Nonnull)) handle{
     
     if(fullName.length <= 1 || ![fullName containsString:@"/"]){
         ZLGithubRequestErrorModel *errorModel = [ZLGithubRequestErrorModel errorModelWithStatusCode:0 message:@"fullName is invalid" documentation_url:nil];
@@ -62,9 +62,9 @@
  * @param serialNumber 流水号
  **/
 - (ZLGithubRepositoryModelV2 *) getRepoInfoWithOwnerName:(NSString * _Nonnull) ownerName
-                                              repoName:(NSString * _Nonnull) repoName
-                                          serialNumber:(NSString * _Nonnull) serialNumber
-                                        completeHandle:(void(^ _Nonnull)(ZLOperationResultModel *  _Nonnull)) handle{
+                                                repoName:(NSString * _Nonnull) repoName
+                                            serialNumber:(NSString * _Nonnull) serialNumber
+                                          completeHandle:(void(^ _Nonnull)(ZLOperationResultModel *  _Nonnull)) handle{
     
     GithubResponse response = ^(BOOL  result, id responseObject, NSString * serialNumber)
     {
@@ -83,9 +83,9 @@
     };
     
     [[ZLGithubHttpClientV2 defaultClient] getRepoInfoWithLogin:ownerName
-                                                        name:repoName
-                                                serialNumber:serialNumber
-                                                       block:response];
+                                                          name:repoName
+                                                  serialNumber:serialNumber
+                                                         block:response];
     
     return [[ZLServiceManager sharedInstance].dbModule getRepoInfoWithFullName:[NSString stringWithFormat:@"%@/%@",ownerName,repoName]];
     
@@ -253,6 +253,34 @@
                                                            serialNumber:serialNumber response:response];
 }
 
+
+- (void) getRepoCommitCompareWithLogin:(NSString * _Nonnull) login
+                              repoName:(NSString * _Nonnull) repoName
+                               baseRef:(NSString * _Nonnull) baseRef
+                               headRef:(NSString * _Nonnull) headRef
+                          serialNumber:(NSString *) serialNumber
+                        completeHandle:(void(^ _Nonnull)(ZLOperationResultModel * _Nonnull)) handle {
+    GithubResponse response = ^(BOOL  result, id responseObject, NSString * serialNumber)
+    {
+        ZLOperationResultModel * repoResultModel = [[ZLOperationResultModel alloc] init];
+        repoResultModel.result = result;
+        repoResultModel.serialNumber = serialNumber;
+        repoResultModel.data = responseObject;
+        
+        if(handle)
+        {
+            ZLMainThreadDispatch(handle(repoResultModel);)
+        }
+    };
+    
+    [[ZLGithubHttpClientV2 defaultClient] getCommitCompareForRepoWithLogin:login
+                                                                  repoName:repoName
+                                                                   baseRef:baseRef
+                                                                   headRef:headRef
+                                                                      page: 1
+                                                                  per_page: 30
+                                                              serialNumber:serialNumber response:response];
+}
 
 
 /**
@@ -947,10 +975,10 @@
 
 
 - (void) getRepositoryFileRawInfoWithFullName:(NSString *) fullName
-                                          path:(NSString *) path
-                                        branch:(NSString *) branch
-                                  serialNumber:(NSString *) serialNumber
-                                completeHandle:(void(^)(ZLOperationResultModel *)) handle
+                                         path:(NSString *) path
+                                       branch:(NSString *) branch
+                                 serialNumber:(NSString *) serialNumber
+                               completeHandle:(void(^)(ZLOperationResultModel *)) handle
 {
     if(fullName.length == 0 || ![fullName containsString:@"/"])
     {
@@ -983,10 +1011,10 @@
 
 - (void) getRepoReleaseLitsWithLogin:(NSString *) login
                             repoName:(NSString *) repoName
-                             per_page:(NSInteger) per_page
+                            per_page:(NSInteger) per_page
                                after:(NSString *) after
-                         serialNumber:(NSString *) serialNumber
-                       completeHandle:(void(^)(ZLOperationResultModel *)) handle{
+                        serialNumber:(NSString *) serialNumber
+                      completeHandle:(void(^)(ZLOperationResultModel *)) handle{
     
     GithubResponse response = ^(BOOL  result, id responseObject, NSString * serialNumber)
     {
@@ -1013,8 +1041,8 @@
 - (void) getRepoReleaseInfoWithLogin:(NSString *) login
                             repoName:(NSString *) repoName
                              tagName:(NSString *) tagName
-                         serialNumber:(NSString *) serialNumber
-                       completeHandle:(void(^)(ZLOperationResultModel *)) handle{
+                        serialNumber:(NSString *) serialNumber
+                      completeHandle:(void(^)(ZLOperationResultModel *)) handle{
     
     GithubResponse response = ^(BOOL  result, id responseObject, NSString * serialNumber)
     {
