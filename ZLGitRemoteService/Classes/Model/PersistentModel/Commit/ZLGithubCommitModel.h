@@ -111,7 +111,7 @@ NS_ASSUME_NONNULL_BEGIN
  https://developer.github.com/v3/repos/commits/
  */
 
-@interface ZLGithubFileModel : ZLBaseObject
+@interface ZLGithubFileDiffModel : ZLBaseObject
 
 @property (nonatomic,strong) NSString * filename;
 
@@ -121,7 +121,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic,assign) int changes;
 
-@property (nonatomic,strong) NSString * status;
+@property (nonatomic,strong) NSString * status;   // added modified renamed removed
 
 @property (nonatomic, strong) NSString * raw_url;
 
@@ -168,7 +168,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property(nonatomic, strong, nullable) ZLGithubCommitStatModel * stats;            //合计修改信息
 
-@property(nonatomic, strong) NSArray<ZLGithubFileModel *> * files;          // 修改的文件
+@property(nonatomic, strong) NSArray<ZLGithubFileDiffModel *> * files;          // 修改的文件
 
 @end
 
@@ -193,7 +193,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property(nonatomic, strong) NSArray<ZLGithubCommitModel *> * commits;
 
-@property(nonatomic, strong) NSArray<ZLGithubFileModel *> * files;          // 修改的文件
+@property(nonatomic, strong) NSArray<ZLGithubFileDiffModel *> * files;          // 修改的文件
 
 @end
 NS_ASSUME_NONNULL_END

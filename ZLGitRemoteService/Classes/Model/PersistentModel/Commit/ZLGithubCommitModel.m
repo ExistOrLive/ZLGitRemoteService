@@ -10,7 +10,7 @@
 #import <MJExtension/MJExtension.h>
 #import "ZLGitRemoteService-Swift.h"
 
-@implementation ZLGithubFileModel 
+@implementation ZLGithubFileDiffModel
 
 @end
 
@@ -23,7 +23,7 @@
 
 + (NSDictionary *)mj_objectClassInArray
 {
-    return @{@"files":[ZLGithubFileModel class]};
+    return @{@"files":[ZLGithubFileDiffModel class]};
 }
 
 + (NSDictionary *)mj_replacedKeyFromPropertyName
@@ -62,7 +62,7 @@
 
 + (NSDictionary *)mj_objectClassInArray
 {
-    return @{@"files":[ZLGithubFileModel class],
+    return @{@"files":[ZLGithubFileDiffModel class],
              @"commits": [ZLGithubCommitModel class]};
 }
 
