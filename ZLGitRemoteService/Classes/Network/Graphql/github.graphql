@@ -1239,52 +1239,51 @@ query orgInfo($login: String!) {
 # 查询组织信息
 query UserOrOrgInfo($login: String!) {
   user(login: $login) {
-    node_id:id
-    user_id:databaseId
-    
-    loginName:login
+    node_id: id
+    user_id: databaseId
+
+    loginName: login
     name
-    html_url:url
-    avatar_url:avatarUrl(size:150)
-    
-    created_at:createdAt
-    updated_at:updatedAt
-    
-    followers{
+    html_url: url
+    avatar_url: avatarUrl(size: 150)
+
+    created_at: createdAt
+    updated_at: updatedAt
+
+    followers {
       totalCount
     }
-    following{
+    following {
       totalCount
     }
-    gists{
+    gists {
       totalCount
     }
-    repositories(ownerAffiliations:[OWNER]){
+    repositories(ownerAffiliations: [OWNER]) {
       totalCount
     }
-    
+
     bio
     company
     email
     location
-    blog:websiteUrl
+    blog: websiteUrl
     status {
       message
     }
-    
-    
+
     isViewer
     viewerIsFollowing
     isDeveloperProgramMember
-    
-    pinnedItems(types:[REPOSITORY],first:20){
+
+    pinnedItems(types: [REPOSITORY], first: 20) {
       totalCount
-      nodes{
-        ...on Repository{
-          owner{
+      nodes {
+        ... on Repository {
+          owner {
             login
-            avatarUrl(size:150)
-            url 
+            avatarUrl(size: 150)
+            url
           }
           name
           isPrivate
@@ -1292,7 +1291,7 @@ query UserOrOrgInfo($login: String!) {
           url
           description
           stargazerCount
-          primaryLanguage{
+          primaryLanguage {
             name
             color
           }
@@ -1300,12 +1299,12 @@ query UserOrOrgInfo($login: String!) {
       }
     }
 
-    contributionsCollection{
-      contributionCalendar{
+    contributionsCollection {
+      contributionCalendar {
         totalContributions
-        weeks{
+        weeks {
           firstDay
-          contributionDays{
+          contributionDays {
             contributionCount
             contributionLevel
             date
@@ -1314,50 +1313,35 @@ query UserOrOrgInfo($login: String!) {
         }
       }
     }
-    
   }
 
-  organization(login:$login){
-    
-    node_id:id
-    user_id:databaseId
-    
-    loginName:login
+  organization(login: $login) {
+    node_id: id
+    user_id: databaseId
+
+    loginName: login
     name
-    html_url:url
-    avatar_url:avatarUrl(size:150)
-    
-    
-    bio:description
+    html_url: url
+    avatar_url: avatarUrl(size: 150)
+
+    bio: description
     email
     location
-    blog:websiteUrl
-    
-    created_at:createdAt
-    updated_at:updatedAt
-    
-    repositories{
-      totalCount
-    }
-    
-    teams{
-      totalCount
-    }
-    
-    membersWithRole{
-      totalCount
-    }
-    
+    blog: websiteUrl
+
+    created_at: createdAt
+    updated_at: updatedAt
+
     viewerIsAMember
 
-    pinnedItems(types:[REPOSITORY],first:20){
+    pinnedItems(types: [REPOSITORY], first: 20) {
       totalCount
-      nodes{
-        ...on Repository{
-          owner{
+      nodes {
+        ... on Repository {
+          owner {
             login
-            avatarUrl(size:150)
-            url 
+            avatarUrl(size: 150)
+            url
           }
           name
           isPrivate
@@ -1365,12 +1349,30 @@ query UserOrOrgInfo($login: String!) {
           url
           description
           stargazerCount
-          primaryLanguage{
+          primaryLanguage {
             name
             color
           }
         }
       }
+    }
+  }
+
+  orgInfoRepoCount: organization(login: $login) {
+    repositories {
+      totalCount
+    }
+  }
+
+  orgInfoMemberCount: organization(login: $login) {
+    membersWithRole {
+      totalCount
+    }
+  }
+
+  orgInfoTeamCount: organization(login: $login) {
+    teams {
+      totalCount
     }
   }
 }
@@ -1889,6 +1891,7 @@ query repoReleaseInfo($login: String!, $name: String!, $tagName: String!) {
       }
       repository {
         nameWithOwner
+        name
         owner {
           login
           avatarUrl

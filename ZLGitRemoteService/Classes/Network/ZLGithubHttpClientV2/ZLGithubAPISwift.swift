@@ -136,6 +136,19 @@ enum ZLGithubAPISwift {
                                   page: Int,
                                   per_page: Int)
     
+    // MARK: Org
+    ///  获取某个组织信息
+    case getOrgInfo(login: String)
+    
+    ///  获取某个组织的仓库列表
+    ///  - Parameters
+    ///    - login: 用户标识
+    ///    - page: 页号 从 1 开始
+    ///    - per_page: pageSize
+    case getRepositoriesForOrg(login: String,
+                                page: Int,
+                                per_page: Int)
+    
     // MARK: Repo
     ///  获取readme
     ///  - Parameters

@@ -42,9 +42,29 @@
 
 # pragma mark - user info
 
-- (ZLGithubUserBriefModel *) getUserInfoWithLoginName:(NSString * _Nonnull) loginName
+/// 通过 rest api 获取用户数据
+- (void) getUserInfoWithLoginName:(NSString * _Nonnull) loginName
                                          serialNumber:(NSString * _Nonnull) serailNumber
                                        completeHandle:(void(^ _Nonnull)(ZLOperationResultModel *  _Nonnull)) handle{
+    
+    GithubResponse response = ^(BOOL result,id responseObject,NSString * serialNumber){
+        ZLOperationResultModel * userResultModel = [[ZLOperationResultModel alloc] init];
+        userResultModel.result = result;
+        userResultModel.serialNumber = serialNumber;
+        userResultModel.data = responseObject;
+    
+        ZLMainThreadDispatch(if(handle){handle(userResultModel);})
+    };
+    
+    [[ZLGithubHttpClientV2 defaultClient] getUserInfoWithLogin:loginName
+                                                  serialNumber:serailNumber
+                                                      response:response];
+}
+
+/// 通过 rest api 获取组织数据
+- (void) getOrgInfoWithLoginName:(NSString * _Nonnull) loginName
+                                        serialNumber:(NSString * _Nonnull) serailNumber
+                                      completeHandle:(void(^ _Nonnull)(ZLOperationResultModel *  _Nonnull)) handle{
     
     GithubResponse response = ^(BOOL result,id responseObject,NSString * serialNumber){
         ZLOperationResultModel * userResultModel = [[ZLOperationResultModel alloc] init];
@@ -59,14 +79,41 @@
         ZLMainThreadDispatch(if(handle){handle(userResultModel);})
     };
     
-    [[ZLGithubHttpClientV2 defaultClient] getUserInfoWithLogin:loginName
-                                                  serialNumber:serailNumber
-                                                      response:response];
-        
-    return [[ZLServiceManager sharedInstance].dbModule getUserOrOrgInfoWithLoginName:loginName];
+    [[ZLGithubHttpClientV2 defaultClient] getOrgInfoWithLogin:loginName
+                                                 serialNumber:serailNumber
+                                                     response:response];
 }
 
 
+/// 通过 graphql  api 获取用户/组织数据
+/** https://docs.github.com/en/organizations/managing-programmatic-access-to-your-organization/limiting-oauth-app-and-github-app-access-requests
+    如果组织的所有者没有授权，oauth app 不能通过 graphql api 访问组织的repo数据，且会导致整个请求报错，因此该方法 不直接获取 组织的仓库数据； 通过 getOrgInfoWithLoginName 方法获取仓库数据
+ **/
+
+- (ZLGithubUserBriefModel *) getUserOrOrgInfoWithLoginName:(NSString * _Nonnull) loginName
+                                              serialNumber:(NSString * _Nonnull) serailNumber
+                                            completeHandle:(void(^ _Nonnull)(ZLOperationResultModel *  _Nonnull)) handle{
+    
+    GithubResponse response = ^(BOOL result,id responseObject,NSString * serialNumber){
+        ZLOperationResultModel * userResultModel = [[ZLOperationResultModel alloc] init];
+        userResultModel.result = result;
+        userResultModel.serialNumber = serialNumber;
+        userResultModel.data = responseObject;
+        
+        if(result == true && [responseObject isKindOfClass:[ZLGithubUserBriefModel class]]) {
+            [[ZLServiceManager sharedInstance].dbModule insertOrUpdateUserInfo:(ZLGithubUserBriefModel *)responseObject];
+        }
+        
+        ZLMainThreadDispatch(if(handle){handle(userResultModel);})
+    };
+    
+    [[ZLGithubHttpClientV2 defaultClient] getUserOrOrgInfoWithLogin:loginName
+                                                       serialNumber:serailNumber
+                                                              block:response];
+        
+    return [[ZLServiceManager sharedInstance].dbModule getUserOrOrgInfoWithLoginName:loginName];
+    
+}
 
 /**
  * @brief 根据登陆名获取用户或者组织avatar
@@ -377,6 +424,7 @@
 #pragma mark - user additions info (repos followers followings gists)
 
 - (void) getAdditionInfoForUser:(NSString * _Nonnull) userLoginName
+                          isOrg: (Boolean) isOrg
                        infoType:(ZLUserAdditionInfoType) type
                            page:(NSUInteger) page
                        per_page:(NSUInteger) per_page
@@ -397,11 +445,20 @@
     {
         case ZLUserAdditionInfoTypeRepositories:
         {
-            [self getRepositoriesInfoForUser:userLoginName
-                                        page:page
-                                    per_page:per_page
-                                serialNumber:serialNumber
-                              completeHandle:handle];
+            if(isOrg) {
+                
+                [self getRepositoriesInfoForOrg:userLoginName
+                                            page:page
+                                        per_page:per_page
+                                    serialNumber:serialNumber
+                                  completeHandle:handle];
+            } else {
+                [self getRepositoriesInfoForUser:userLoginName
+                                            page:page
+                                        per_page:per_page
+                                    serialNumber:serialNumber
+                                  completeHandle:handle];
+            }
         }
             break;
         case ZLUserAdditionInfoTypeGists:
@@ -454,10 +511,10 @@
  *
  **/
 - (void) getRepositoriesInfoForUser:(NSString *) userLoginName
-                                    page:(NSUInteger) page
-                                per_page:(NSUInteger) per_page
-                            serialNumber:(NSString *) serialNumber
-                          completeHandle:(void(^_Nonnull)(ZLOperationResultModel * _Nonnull)) handle{
+                               page:(NSUInteger) page
+                           per_page:(NSUInteger) per_page
+                       serialNumber:(NSString *) serialNumber
+                     completeHandle:(void(^_Nonnull)(ZLOperationResultModel * _Nonnull)) handle{
     
     
     GithubResponse responseBlock = ^(BOOL result, id _Nullable responseObject, NSString * serialNumber) {
@@ -490,6 +547,38 @@
                                                                       perPage:per_page serialNumber:serialNumber response:responseBlock];
     }
     
+}
+
+/**
+ * @brief 请求repos
+ *
+ **/
+- (void) getRepositoriesInfoForOrg:(NSString *) userLoginName
+                               page:(NSUInteger) page
+                           per_page:(NSUInteger) per_page
+                       serialNumber:(NSString *) serialNumber
+                     completeHandle:(void(^_Nonnull)(ZLOperationResultModel * _Nonnull)) handle{
+    
+    
+    GithubResponse responseBlock = ^(BOOL result, id _Nullable responseObject, NSString * serialNumber) {
+        
+        ZLOperationResultModel * repoResultModel = [[ZLOperationResultModel alloc] init];
+        repoResultModel.result = result;
+        repoResultModel.serialNumber = serialNumber;
+        repoResultModel.data = responseObject;
+ 
+        
+        if(handle){
+            ZLMainThreadDispatch(handle(repoResultModel);)
+        }
+    };
+    
+    
+
+        [[ZLGithubHttpClientV2 defaultClient] getRepositoriesForOrgWithLogin:userLoginName
+                                                                         page:page
+                                                                      perPage:per_page serialNumber:serialNumber response:responseBlock];
+
 }
 
 /**

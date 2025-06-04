@@ -227,6 +227,9 @@ extension ZLGithubAPISwift {
                       "location": location,
                       "hireable": hireable?.boolValue,
                       "bio": bio]
+        case .getRepositoriesForOrg(let _,let page,let per_page):
+            params = ["page": page,
+                      "per_page": per_page]
         default:
             params = [:]
         }

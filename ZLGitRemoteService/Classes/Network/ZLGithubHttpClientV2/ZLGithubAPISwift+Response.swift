@@ -80,7 +80,8 @@ extension ZLGithubAPISwift {
                 .getRepositoriesForUser,
                 .currentUserStarreds,
                 .getStarredForUser,
-                .getForksForRepo:
+                .getForksForRepo,
+                .getRepositoriesForOrg:
             return .object(parseWrapper: ZLGithubAPIObjectTypeWrapper<ZLGithubRepositoryModel>(isArray: true))
         case .getBlockedUsers,
                 .getFollowersForUser,
@@ -233,6 +234,8 @@ extension ZLGithubAPISwift {
                                                                 response: response,
                                                                 data: data)
             }))
+        case .getOrgInfo:
+            return .object(parseWrapper: ZLGithubAPIObjectTypeWrapper<ZLGithubOrgModel>())
         case .getLanguagesInfoForRepo,.getHtmlURL:
             return .jsonObject
         case .renderCodeToMarkdown:

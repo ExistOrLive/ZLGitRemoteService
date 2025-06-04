@@ -121,7 +121,7 @@ import MJExtension
 
 
 // MARK: ----- ZLGithubOrgModel -----
-// 废弃 ZLGithubOrgModel 使用 ZLGithubUserModel 统一保存User和Organization
+//  ZLGithubOrgModel
 @objcMembers open class ZLGithubOrgModel: ZLGithubUserBriefModel{
     
     open var name: String?
@@ -129,7 +129,19 @@ import MJExtension
     open var blog: String?
     open var location: String?
     open var email: String?
-    open var bio: String?
+    open var bio: String? {
+        get {
+            if _bio == nil {
+                _bio = desc_org
+            }
+            return _bio
+        }
+        set {
+            _bio = newValue
+        }
+    }
+    
+    open var desc_org: String?
 
     open var members: Int = 0
     open var teams: Int = 0
@@ -153,7 +165,9 @@ import MJExtension
     // MARK: private property
     open var public_repos: Int = 0
     open var total_private_repos: Int = 0
+    
     private var _repositories: Int?
+    private var _bio: String?
     
     open override func mj_newValue(fromOldValue oldValue: Any!, property: MJProperty!) -> Any! {
         if "created_at" == property.name ||
@@ -169,6 +183,13 @@ import MJExtension
         return super.mj_newValue(fromOldValue: oldValue, property: property)
     }
     
+    public override class func mj_replacedKeyFromPropertyName() -> [AnyHashable : Any]! {
+        var result = super.mj_replacedKeyFromPropertyName()
+        result?["desc_org"] = "description"
+        return result
+    }
+ 
+
     override class func supportsSecureCoding() -> Bool {
         return true
     }

@@ -776,4 +776,27 @@ public extension ZLGithubHttpClientV2 {
         self.requestGithubAPI(api: api, serialNumber: serialNumber, responseBlock: response)
         
     }
+    
+    //MARK: - 获取指定组织的仓库
+    /// 获取指定API的html url
+    @objc func getRepositoriesForOrg(login:String,
+                                     page: Int,
+                                     perPage: Int,
+                                     serialNumber: String,
+                                     response: @escaping GithubResponseSwift) {
+        
+        let api = ZLGithubAPISwift.getRepositoriesForOrg(login: login, page: page, per_page: perPage)
+        
+        self.requestGithubAPI(api: api, serialNumber: serialNumber, responseBlock: response)
+    }
+    
+    /// 获取组织的信息
+    @objc func getOrgInfo(login:String,
+                          serialNumber: String,
+                          response: @escaping GithubResponseSwift) {
+        
+        let api = ZLGithubAPISwift.getOrgInfo(login: login)
+        
+        self.requestGithubAPI(api: api, serialNumber: serialNumber, responseBlock: response)
+    }
 }

@@ -23848,18 +23848,6 @@ public final class UserOrOrgInfoQuery: GraphQLQuery {
         blog: websiteUrl
         created_at: createdAt
         updated_at: updatedAt
-        repositories {
-          __typename
-          totalCount
-        }
-        teams {
-          __typename
-          totalCount
-        }
-        membersWithRole {
-          __typename
-          totalCount
-        }
         viewerIsAMember
         pinnedItems(types: [REPOSITORY], first: 20) {
           __typename
@@ -23888,6 +23876,27 @@ public final class UserOrOrgInfoQuery: GraphQLQuery {
           }
         }
       }
+      orgInfoRepoCount: organization(login: $login) {
+        __typename
+        repositories {
+          __typename
+          totalCount
+        }
+      }
+      orgInfoMemberCount: organization(login: $login) {
+        __typename
+        membersWithRole {
+          __typename
+          totalCount
+        }
+      }
+      orgInfoTeamCount: organization(login: $login) {
+        __typename
+        teams {
+          __typename
+          totalCount
+        }
+      }
     }
     """
 
@@ -23910,6 +23919,9 @@ public final class UserOrOrgInfoQuery: GraphQLQuery {
       return [
         GraphQLField("user", arguments: ["login": GraphQLVariable("login")], type: .object(User.selections)),
         GraphQLField("organization", arguments: ["login": GraphQLVariable("login")], type: .object(Organization.selections)),
+        GraphQLField("organization", alias: "orgInfoRepoCount", arguments: ["login": GraphQLVariable("login")], type: .object(OrgInfoRepoCount.selections)),
+        GraphQLField("organization", alias: "orgInfoMemberCount", arguments: ["login": GraphQLVariable("login")], type: .object(OrgInfoMemberCount.selections)),
+        GraphQLField("organization", alias: "orgInfoTeamCount", arguments: ["login": GraphQLVariable("login")], type: .object(OrgInfoTeamCount.selections)),
       ]
     }
 
@@ -23919,8 +23931,8 @@ public final class UserOrOrgInfoQuery: GraphQLQuery {
       self.resultMap = unsafeResultMap
     }
 
-    public init(user: User? = nil, organization: Organization? = nil) {
-      self.init(unsafeResultMap: ["__typename": "Query", "user": user.flatMap { (value: User) -> ResultMap in value.resultMap }, "organization": organization.flatMap { (value: Organization) -> ResultMap in value.resultMap }])
+    public init(user: User? = nil, organization: Organization? = nil, orgInfoRepoCount: OrgInfoRepoCount? = nil, orgInfoMemberCount: OrgInfoMemberCount? = nil, orgInfoTeamCount: OrgInfoTeamCount? = nil) {
+      self.init(unsafeResultMap: ["__typename": "Query", "user": user.flatMap { (value: User) -> ResultMap in value.resultMap }, "organization": organization.flatMap { (value: Organization) -> ResultMap in value.resultMap }, "orgInfoRepoCount": orgInfoRepoCount.flatMap { (value: OrgInfoRepoCount) -> ResultMap in value.resultMap }, "orgInfoMemberCount": orgInfoMemberCount.flatMap { (value: OrgInfoMemberCount) -> ResultMap in value.resultMap }, "orgInfoTeamCount": orgInfoTeamCount.flatMap { (value: OrgInfoTeamCount) -> ResultMap in value.resultMap }])
     }
 
     /// Lookup a user by login.
@@ -23940,6 +23952,36 @@ public final class UserOrOrgInfoQuery: GraphQLQuery {
       }
       set {
         resultMap.updateValue(newValue?.resultMap, forKey: "organization")
+      }
+    }
+
+    /// Lookup a organization by login.
+    public var orgInfoRepoCount: OrgInfoRepoCount? {
+      get {
+        return (resultMap["orgInfoRepoCount"] as? ResultMap).flatMap { OrgInfoRepoCount(unsafeResultMap: $0) }
+      }
+      set {
+        resultMap.updateValue(newValue?.resultMap, forKey: "orgInfoRepoCount")
+      }
+    }
+
+    /// Lookup a organization by login.
+    public var orgInfoMemberCount: OrgInfoMemberCount? {
+      get {
+        return (resultMap["orgInfoMemberCount"] as? ResultMap).flatMap { OrgInfoMemberCount(unsafeResultMap: $0) }
+      }
+      set {
+        resultMap.updateValue(newValue?.resultMap, forKey: "orgInfoMemberCount")
+      }
+    }
+
+    /// Lookup a organization by login.
+    public var orgInfoTeamCount: OrgInfoTeamCount? {
+      get {
+        return (resultMap["orgInfoTeamCount"] as? ResultMap).flatMap { OrgInfoTeamCount(unsafeResultMap: $0) }
+      }
+      set {
+        resultMap.updateValue(newValue?.resultMap, forKey: "orgInfoTeamCount")
       }
     }
 
@@ -24993,9 +25035,6 @@ public final class UserOrOrgInfoQuery: GraphQLQuery {
           GraphQLField("websiteUrl", alias: "blog", type: .scalar(String.self)),
           GraphQLField("createdAt", alias: "created_at", type: .nonNull(.scalar(String.self))),
           GraphQLField("updatedAt", alias: "updated_at", type: .nonNull(.scalar(String.self))),
-          GraphQLField("repositories", type: .nonNull(.object(Repository.selections))),
-          GraphQLField("teams", type: .nonNull(.object(Team.selections))),
-          GraphQLField("membersWithRole", type: .nonNull(.object(MembersWithRole.selections))),
           GraphQLField("viewerIsAMember", type: .nonNull(.scalar(Bool.self))),
           GraphQLField("pinnedItems", arguments: ["types": ["REPOSITORY"], "first": 20], type: .nonNull(.object(PinnedItem.selections))),
         ]
@@ -25007,8 +25046,8 @@ public final class UserOrOrgInfoQuery: GraphQLQuery {
         self.resultMap = unsafeResultMap
       }
 
-      public init(nodeId: GraphQLID, userId: Int? = nil, loginName: String, name: String? = nil, htmlUrl: String, avatarUrl: String, bio: String? = nil, email: String? = nil, location: String? = nil, blog: String? = nil, createdAt: String, updatedAt: String, repositories: Repository, teams: Team, membersWithRole: MembersWithRole, viewerIsAMember: Bool, pinnedItems: PinnedItem) {
-        self.init(unsafeResultMap: ["__typename": "Organization", "node_id": nodeId, "user_id": userId, "loginName": loginName, "name": name, "html_url": htmlUrl, "avatar_url": avatarUrl, "bio": bio, "email": email, "location": location, "blog": blog, "created_at": createdAt, "updated_at": updatedAt, "repositories": repositories.resultMap, "teams": teams.resultMap, "membersWithRole": membersWithRole.resultMap, "viewerIsAMember": viewerIsAMember, "pinnedItems": pinnedItems.resultMap])
+      public init(nodeId: GraphQLID, userId: Int? = nil, loginName: String, name: String? = nil, htmlUrl: String, avatarUrl: String, bio: String? = nil, email: String? = nil, location: String? = nil, blog: String? = nil, createdAt: String, updatedAt: String, viewerIsAMember: Bool, pinnedItems: PinnedItem) {
+        self.init(unsafeResultMap: ["__typename": "Organization", "node_id": nodeId, "user_id": userId, "loginName": loginName, "name": name, "html_url": htmlUrl, "avatar_url": avatarUrl, "bio": bio, "email": email, "location": location, "blog": blog, "created_at": createdAt, "updated_at": updatedAt, "viewerIsAMember": viewerIsAMember, "pinnedItems": pinnedItems.resultMap])
       }
 
       public var __typename: String {
@@ -25140,36 +25179,6 @@ public final class UserOrOrgInfoQuery: GraphQLQuery {
         }
       }
 
-      /// A list of repositories that the user owns.
-      public var repositories: Repository {
-        get {
-          return Repository(unsafeResultMap: resultMap["repositories"]! as! ResultMap)
-        }
-        set {
-          resultMap.updateValue(newValue.resultMap, forKey: "repositories")
-        }
-      }
-
-      /// A list of teams in this organization.
-      public var teams: Team {
-        get {
-          return Team(unsafeResultMap: resultMap["teams"]! as! ResultMap)
-        }
-        set {
-          resultMap.updateValue(newValue.resultMap, forKey: "teams")
-        }
-      }
-
-      /// A list of users who are members of this organization.
-      public var membersWithRole: MembersWithRole {
-        get {
-          return MembersWithRole(unsafeResultMap: resultMap["membersWithRole"]! as! ResultMap)
-        }
-        set {
-          resultMap.updateValue(newValue.resultMap, forKey: "membersWithRole")
-        }
-      }
-
       /// Viewer is an active member of this organization.
       public var viewerIsAMember: Bool {
         get {
@@ -25187,126 +25196,6 @@ public final class UserOrOrgInfoQuery: GraphQLQuery {
         }
         set {
           resultMap.updateValue(newValue.resultMap, forKey: "pinnedItems")
-        }
-      }
-
-      public struct Repository: GraphQLSelectionSet {
-        public static let possibleTypes: [String] = ["RepositoryConnection"]
-
-        public static var selections: [GraphQLSelection] {
-          return [
-            GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
-            GraphQLField("totalCount", type: .nonNull(.scalar(Int.self))),
-          ]
-        }
-
-        public private(set) var resultMap: ResultMap
-
-        public init(unsafeResultMap: ResultMap) {
-          self.resultMap = unsafeResultMap
-        }
-
-        public init(totalCount: Int) {
-          self.init(unsafeResultMap: ["__typename": "RepositoryConnection", "totalCount": totalCount])
-        }
-
-        public var __typename: String {
-          get {
-            return resultMap["__typename"]! as! String
-          }
-          set {
-            resultMap.updateValue(newValue, forKey: "__typename")
-          }
-        }
-
-        /// Identifies the total count of items in the connection.
-        public var totalCount: Int {
-          get {
-            return resultMap["totalCount"]! as! Int
-          }
-          set {
-            resultMap.updateValue(newValue, forKey: "totalCount")
-          }
-        }
-      }
-
-      public struct Team: GraphQLSelectionSet {
-        public static let possibleTypes: [String] = ["TeamConnection"]
-
-        public static var selections: [GraphQLSelection] {
-          return [
-            GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
-            GraphQLField("totalCount", type: .nonNull(.scalar(Int.self))),
-          ]
-        }
-
-        public private(set) var resultMap: ResultMap
-
-        public init(unsafeResultMap: ResultMap) {
-          self.resultMap = unsafeResultMap
-        }
-
-        public init(totalCount: Int) {
-          self.init(unsafeResultMap: ["__typename": "TeamConnection", "totalCount": totalCount])
-        }
-
-        public var __typename: String {
-          get {
-            return resultMap["__typename"]! as! String
-          }
-          set {
-            resultMap.updateValue(newValue, forKey: "__typename")
-          }
-        }
-
-        /// Identifies the total count of items in the connection.
-        public var totalCount: Int {
-          get {
-            return resultMap["totalCount"]! as! Int
-          }
-          set {
-            resultMap.updateValue(newValue, forKey: "totalCount")
-          }
-        }
-      }
-
-      public struct MembersWithRole: GraphQLSelectionSet {
-        public static let possibleTypes: [String] = ["OrganizationMemberConnection"]
-
-        public static var selections: [GraphQLSelection] {
-          return [
-            GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
-            GraphQLField("totalCount", type: .nonNull(.scalar(Int.self))),
-          ]
-        }
-
-        public private(set) var resultMap: ResultMap
-
-        public init(unsafeResultMap: ResultMap) {
-          self.resultMap = unsafeResultMap
-        }
-
-        public init(totalCount: Int) {
-          self.init(unsafeResultMap: ["__typename": "OrganizationMemberConnection", "totalCount": totalCount])
-        }
-
-        public var __typename: String {
-          get {
-            return resultMap["__typename"]! as! String
-          }
-          set {
-            resultMap.updateValue(newValue, forKey: "__typename")
-          }
-        }
-
-        /// Identifies the total count of items in the connection.
-        public var totalCount: Int {
-          get {
-            return resultMap["totalCount"]! as! Int
-          }
-          set {
-            resultMap.updateValue(newValue, forKey: "totalCount")
-          }
         }
       }
 
@@ -25640,6 +25529,246 @@ public final class UserOrOrgInfoQuery: GraphQLQuery {
                 }
               }
             }
+          }
+        }
+      }
+    }
+
+    public struct OrgInfoRepoCount: GraphQLSelectionSet {
+      public static let possibleTypes: [String] = ["Organization"]
+
+      public static var selections: [GraphQLSelection] {
+        return [
+          GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+          GraphQLField("repositories", type: .nonNull(.object(Repository.selections))),
+        ]
+      }
+
+      public private(set) var resultMap: ResultMap
+
+      public init(unsafeResultMap: ResultMap) {
+        self.resultMap = unsafeResultMap
+      }
+
+      public init(repositories: Repository) {
+        self.init(unsafeResultMap: ["__typename": "Organization", "repositories": repositories.resultMap])
+      }
+
+      public var __typename: String {
+        get {
+          return resultMap["__typename"]! as! String
+        }
+        set {
+          resultMap.updateValue(newValue, forKey: "__typename")
+        }
+      }
+
+      /// A list of repositories that the user owns.
+      public var repositories: Repository {
+        get {
+          return Repository(unsafeResultMap: resultMap["repositories"]! as! ResultMap)
+        }
+        set {
+          resultMap.updateValue(newValue.resultMap, forKey: "repositories")
+        }
+      }
+
+      public struct Repository: GraphQLSelectionSet {
+        public static let possibleTypes: [String] = ["RepositoryConnection"]
+
+        public static var selections: [GraphQLSelection] {
+          return [
+            GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+            GraphQLField("totalCount", type: .nonNull(.scalar(Int.self))),
+          ]
+        }
+
+        public private(set) var resultMap: ResultMap
+
+        public init(unsafeResultMap: ResultMap) {
+          self.resultMap = unsafeResultMap
+        }
+
+        public init(totalCount: Int) {
+          self.init(unsafeResultMap: ["__typename": "RepositoryConnection", "totalCount": totalCount])
+        }
+
+        public var __typename: String {
+          get {
+            return resultMap["__typename"]! as! String
+          }
+          set {
+            resultMap.updateValue(newValue, forKey: "__typename")
+          }
+        }
+
+        /// Identifies the total count of items in the connection.
+        public var totalCount: Int {
+          get {
+            return resultMap["totalCount"]! as! Int
+          }
+          set {
+            resultMap.updateValue(newValue, forKey: "totalCount")
+          }
+        }
+      }
+    }
+
+    public struct OrgInfoMemberCount: GraphQLSelectionSet {
+      public static let possibleTypes: [String] = ["Organization"]
+
+      public static var selections: [GraphQLSelection] {
+        return [
+          GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+          GraphQLField("membersWithRole", type: .nonNull(.object(MembersWithRole.selections))),
+        ]
+      }
+
+      public private(set) var resultMap: ResultMap
+
+      public init(unsafeResultMap: ResultMap) {
+        self.resultMap = unsafeResultMap
+      }
+
+      public init(membersWithRole: MembersWithRole) {
+        self.init(unsafeResultMap: ["__typename": "Organization", "membersWithRole": membersWithRole.resultMap])
+      }
+
+      public var __typename: String {
+        get {
+          return resultMap["__typename"]! as! String
+        }
+        set {
+          resultMap.updateValue(newValue, forKey: "__typename")
+        }
+      }
+
+      /// A list of users who are members of this organization.
+      public var membersWithRole: MembersWithRole {
+        get {
+          return MembersWithRole(unsafeResultMap: resultMap["membersWithRole"]! as! ResultMap)
+        }
+        set {
+          resultMap.updateValue(newValue.resultMap, forKey: "membersWithRole")
+        }
+      }
+
+      public struct MembersWithRole: GraphQLSelectionSet {
+        public static let possibleTypes: [String] = ["OrganizationMemberConnection"]
+
+        public static var selections: [GraphQLSelection] {
+          return [
+            GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+            GraphQLField("totalCount", type: .nonNull(.scalar(Int.self))),
+          ]
+        }
+
+        public private(set) var resultMap: ResultMap
+
+        public init(unsafeResultMap: ResultMap) {
+          self.resultMap = unsafeResultMap
+        }
+
+        public init(totalCount: Int) {
+          self.init(unsafeResultMap: ["__typename": "OrganizationMemberConnection", "totalCount": totalCount])
+        }
+
+        public var __typename: String {
+          get {
+            return resultMap["__typename"]! as! String
+          }
+          set {
+            resultMap.updateValue(newValue, forKey: "__typename")
+          }
+        }
+
+        /// Identifies the total count of items in the connection.
+        public var totalCount: Int {
+          get {
+            return resultMap["totalCount"]! as! Int
+          }
+          set {
+            resultMap.updateValue(newValue, forKey: "totalCount")
+          }
+        }
+      }
+    }
+
+    public struct OrgInfoTeamCount: GraphQLSelectionSet {
+      public static let possibleTypes: [String] = ["Organization"]
+
+      public static var selections: [GraphQLSelection] {
+        return [
+          GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+          GraphQLField("teams", type: .nonNull(.object(Team.selections))),
+        ]
+      }
+
+      public private(set) var resultMap: ResultMap
+
+      public init(unsafeResultMap: ResultMap) {
+        self.resultMap = unsafeResultMap
+      }
+
+      public init(teams: Team) {
+        self.init(unsafeResultMap: ["__typename": "Organization", "teams": teams.resultMap])
+      }
+
+      public var __typename: String {
+        get {
+          return resultMap["__typename"]! as! String
+        }
+        set {
+          resultMap.updateValue(newValue, forKey: "__typename")
+        }
+      }
+
+      /// A list of teams in this organization.
+      public var teams: Team {
+        get {
+          return Team(unsafeResultMap: resultMap["teams"]! as! ResultMap)
+        }
+        set {
+          resultMap.updateValue(newValue.resultMap, forKey: "teams")
+        }
+      }
+
+      public struct Team: GraphQLSelectionSet {
+        public static let possibleTypes: [String] = ["TeamConnection"]
+
+        public static var selections: [GraphQLSelection] {
+          return [
+            GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+            GraphQLField("totalCount", type: .nonNull(.scalar(Int.self))),
+          ]
+        }
+
+        public private(set) var resultMap: ResultMap
+
+        public init(unsafeResultMap: ResultMap) {
+          self.resultMap = unsafeResultMap
+        }
+
+        public init(totalCount: Int) {
+          self.init(unsafeResultMap: ["__typename": "TeamConnection", "totalCount": totalCount])
+        }
+
+        public var __typename: String {
+          get {
+            return resultMap["__typename"]! as! String
+          }
+          set {
+            resultMap.updateValue(newValue, forKey: "__typename")
+          }
+        }
+
+        /// Identifies the total count of items in the connection.
+        public var totalCount: Int {
+          get {
+            return resultMap["totalCount"]! as! Int
+          }
+          set {
+            resultMap.updateValue(newValue, forKey: "totalCount")
           }
         }
       }
@@ -32476,6 +32605,7 @@ public final class RepoReleaseInfoQuery: GraphQLQuery {
           repository {
             __typename
             nameWithOwner
+            name
             owner {
               __typename
               login
@@ -32959,6 +33089,7 @@ public final class RepoReleaseInfoQuery: GraphQLQuery {
             return [
               GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
               GraphQLField("nameWithOwner", type: .nonNull(.scalar(String.self))),
+              GraphQLField("name", type: .nonNull(.scalar(String.self))),
               GraphQLField("owner", type: .nonNull(.object(Owner.selections))),
             ]
           }
@@ -32969,8 +33100,8 @@ public final class RepoReleaseInfoQuery: GraphQLQuery {
             self.resultMap = unsafeResultMap
           }
 
-          public init(nameWithOwner: String, owner: Owner) {
-            self.init(unsafeResultMap: ["__typename": "Repository", "nameWithOwner": nameWithOwner, "owner": owner.resultMap])
+          public init(nameWithOwner: String, name: String, owner: Owner) {
+            self.init(unsafeResultMap: ["__typename": "Repository", "nameWithOwner": nameWithOwner, "name": name, "owner": owner.resultMap])
           }
 
           public var __typename: String {
@@ -32989,6 +33120,16 @@ public final class RepoReleaseInfoQuery: GraphQLQuery {
             }
             set {
               resultMap.updateValue(newValue, forKey: "nameWithOwner")
+            }
+          }
+
+          /// The name of the repository.
+          public var name: String {
+            get {
+              return resultMap["name"]! as! String
+            }
+            set {
+              resultMap.updateValue(newValue, forKey: "name")
             }
           }
 

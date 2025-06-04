@@ -155,9 +155,9 @@ extension ZLGithubOrgModel{
         email = queryData.organization?.email
         bio = queryData.organization?.bio
         
-        members = queryData.organization?.membersWithRole.totalCount ?? 0
-        teams = queryData.organization?.teams.totalCount ?? 0
-        repositories = queryData.organization?.repositories.totalCount ?? 0
+        members = queryData.orgInfoMemberCount?.membersWithRole.totalCount ?? 0
+        teams = queryData.orgInfoTeamCount?.teams.totalCount ?? 0
+        repositories = queryData.orgInfoRepoCount?.repositories.totalCount ?? 0
         viewerIsAMember = queryData.organization?.viewerIsAMember ?? false
         
         let dateFormatter = DateFormatter()

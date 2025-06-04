@@ -638,20 +638,7 @@ public extension ZLGithubHttpClientV2{
         
     }
     
-    @objc func getOrgInfo(login: String,
-                          serialNumber: String,
-                          block: @escaping GithubResponseSwift){
-        
-        let query = OrgInfoQuery(login: login)
-        self.baseQuery(query: query, serialNumber: serialNumber) { (result, data, serialNumber) in
-            if let queryData = data as? OrgInfoQuery.Data {
-                block(result,ZLGithubOrgModel(queryData: queryData),serialNumber)
-            } else {
-                block(result,data,serialNumber)
-            }
-        }
-   }
-    
+
     @objc func getUserOrOrgInfo(login: String,
                                 serialNumber: String,
                                 block: @escaping GithubResponseSwift){
@@ -659,9 +646,9 @@ public extension ZLGithubHttpClientV2{
         self.baseQuery(query: query, serialNumber: serialNumber) { (result, data, serialNumber) in
             if let queryData = data as? UserOrOrgInfoQuery.Data{
                 if queryData.user != nil {
-                    block(result,ZLGithubUserInfoModelForView(UserOrOrgQueryData: queryData),serialNumber)
+                    block(result,ZLGithubUserInfoModelForView(UserOrOrgQueryData: queryData).userInfo,serialNumber)
                 } else if queryData.organization != nil{
-                    block(result,ZLGithubOrgInfoModelForView(UserOrOrgQueryData: queryData),serialNumber)
+                    block(result,ZLGithubOrgInfoModelForView(UserOrOrgQueryData: queryData).organizationInfo,serialNumber)
                 } else {
                     block(result,data,serialNumber)
                 }

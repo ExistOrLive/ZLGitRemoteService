@@ -39,14 +39,28 @@ static const NSNotificationName _Nonnull ZLUpdateUserPublicProfileInfoResult_Not
 
 
 /**
+ * @brief 根据登陆名获取用户信息
+ * @param loginName 登陆名
+ **/
+- (void) getUserInfoWithLoginName:(NSString * _Nonnull) loginName
+                     serialNumber:(NSString * _Nonnull) serailNumber
+                   completeHandle:(void(^ _Nonnull)(ZLOperationResultModel *  _Nonnull)) handle;
+
+/**
+ * @brief 根据登陆名获取组织信息
+ * @param loginName 登陆名
+ **/
+- (void) getOrgInfoWithLoginName:(NSString * _Nonnull) loginName
+                    serialNumber:(NSString * _Nonnull) serailNumber
+                  completeHandle:(void(^ _Nonnull)(ZLOperationResultModel *  _Nonnull)) handle;
+
+/**
  * @brief 根据登陆名获取用户或者组织信息
  * @param loginName 登陆名
  **/
-- (ZLGithubUserBriefModel *_Nullable) getUserInfoWithLoginName:(NSString * _Nonnull) loginName
-                                                  serialNumber:(NSString * _Nonnull) serailNumber
-                                                completeHandle:(void(^ _Nonnull)(ZLOperationResultModel *  _Nonnull)) handle;
-
-
+- (ZLGithubUserBriefModel *) getUserOrOrgInfoWithLoginName:(NSString * _Nonnull) loginName
+                                              serialNumber:(NSString * _Nonnull) serailNumber
+                                            completeHandle:(void(^ _Nonnull)(ZLOperationResultModel *  _Nonnull)) handle;
 
 /**
  * @brief 根据登陆名获取用户或者组织avatar
@@ -61,6 +75,7 @@ static const NSNotificationName _Nonnull ZLUpdateUserPublicProfileInfoResult_Not
 #pragma mark - user additions info
 
 - (void) getAdditionInfoForUser:(NSString * _Nonnull) userLoginName
+                          isOrg: (Boolean) isOrg
                        infoType:(ZLUserAdditionInfoType) type
                            page:(NSUInteger) page
                        per_page:(NSUInteger) per_page
