@@ -99,6 +99,8 @@ extension ZLGithubAPISwift {
             return ["Accept": "application/html, text/html"]
         case .getCommitDiffForRepo:
             return ["Accept": "application/vnd.github.diff"]
+        case .getGist:
+            return ["Accept": "application/vnd.github.raw+json"]
         default:
             return [:]
         }

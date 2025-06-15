@@ -183,24 +183,7 @@ public extension ZLGithubHttpClientV2 {
         self.requestGithubAPI(api: api, serialNumber: serialNumber, responseBlock: response)
     }
     
-    /// 获取当前的star的仓库
-    @objc func getGistsForCurrentUser(page: Int,
-                                      perPage: Int,
-                                      serialNumber: String,
-                                      response: @escaping GithubResponseSwift) {
-        let api = ZLGithubAPISwift.currentUserGists(page: page, per_page: perPage)
-        self.requestGithubAPI(api: api, serialNumber: serialNumber, responseBlock: response)
-    }
-    
-    /// 获取当前的star的仓库
-    @objc func getGistsForUser(login: String,
-                               page: Int,
-                               perPage: Int,
-                               serialNumber: String,
-                               response: @escaping GithubResponseSwift) {
-        let api = ZLGithubAPISwift.getGistsForUser(login: login, page: page, per_page: perPage)
-        self.requestGithubAPI(api: api, serialNumber: serialNumber, responseBlock: response)
-    }
+ 
     
     /// 获取当前仓库的readme
     @objc func getRepoReadMeInfo(fullName: String,
@@ -777,7 +760,37 @@ public extension ZLGithubHttpClientV2 {
         
     }
     
-    //MARK: - 获取指定组织的仓库
+    //MARK: - gists
+    
+    /// 获取当前用户的gists
+    @objc func getGistsForCurrentUser(page: Int,
+                                      perPage: Int,
+                                      serialNumber: String,
+                                      response: @escaping GithubResponseSwift) {
+        let api = ZLGithubAPISwift.currentUserGists(page: page, per_page: perPage)
+        self.requestGithubAPI(api: api, serialNumber: serialNumber, responseBlock: response)
+    }
+    
+    /// 获取指定用户的gists
+    @objc func getGistsForUser(login: String,
+                               page: Int,
+                               perPage: Int,
+                               serialNumber: String,
+                               response: @escaping GithubResponseSwift) {
+        let api = ZLGithubAPISwift.getGistsForUser(login: login, page: page, per_page: perPage)
+        self.requestGithubAPI(api: api, serialNumber: serialNumber, responseBlock: response)
+    }
+    
+    /// 获取Gist的信息
+    @objc func getGist(gistId: String,
+                       serialNumber: String,
+                       response: @escaping GithubResponseSwift) {
+        let api = ZLGithubAPISwift.getGist(gistId: gistId)
+        self.requestGithubAPI(api: api, serialNumber: serialNumber, responseBlock: response)
+    }
+    
+    
+    //MARK: - org
     /// 获取指定API的html url
     @objc func getRepositoriesForOrg(login:String,
                                      page: Int,

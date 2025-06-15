@@ -23,6 +23,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property(assign, nonatomic) NSUInteger size;
 
+@property(strong, nonatomic) NSString* content;
+
 @end
 
 @interface ZLGithubGistModel : ZLBaseObject
@@ -44,7 +46,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property(strong, nonatomic) ZLGithubUserBriefModel * owner;
 
-@property(strong, nonatomic) NSDictionary * files;
+@property(strong, nonatomic) NSDictionary<NSString *, ZLGithubGistFileModel *> * files;
 
 @end
 

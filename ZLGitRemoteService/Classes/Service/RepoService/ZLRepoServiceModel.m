@@ -258,6 +258,8 @@
                               repoName:(NSString * _Nonnull) repoName
                                baseRef:(NSString * _Nonnull) baseRef
                                headRef:(NSString * _Nonnull) headRef
+                              per_page:(NSInteger)per_page
+                                  page:(NSInteger)page
                           serialNumber:(NSString *) serialNumber
                         completeHandle:(void(^ _Nonnull)(ZLOperationResultModel * _Nonnull)) handle {
     GithubResponse response = ^(BOOL  result, id responseObject, NSString * serialNumber)
@@ -277,8 +279,8 @@
                                                                   repoName:repoName
                                                                    baseRef:baseRef
                                                                    headRef:headRef
-                                                                      page: 1
-                                                                  per_page: 30
+                                                                      page: page
+                                                                  per_page: per_page
                                                               serialNumber:serialNumber response:response];
 }
 

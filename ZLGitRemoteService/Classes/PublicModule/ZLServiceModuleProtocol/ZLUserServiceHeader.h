@@ -169,6 +169,16 @@ static const NSNotificationName _Nonnull ZLUpdateUserPublicProfileInfoResult_Not
                       serialNumber: (NSString * _Nonnull) serialNumber
                    completeHandle: (void(^ _Nonnull)(ZLOperationResultModel * _Nonnull)) handle;
 
+
+#pragma mark - gist
+/**
+ * @brief 请求gist 信息
+ *
+ **/
+- (void) getGistInfoFor:(NSString *) gistId
+           serialNumber:(NSString *) serialNumber
+         completeHandle:(void(^_Nonnull)(ZLOperationResultModel * _Nonnull)) handle;
+
 @end
 
 #endif /* ZLUserServiceHeader_h */

@@ -687,7 +687,6 @@
     }
 }
 
-
 /**
  * @brief 请求gists
  *
@@ -730,6 +729,34 @@
                                                           serialNumber:serialNumber
                                                               response:responseBlock];
     }
+    
+}
+
+
+/**
+ * @brief 请求gist 信息
+ *
+ **/
+- (void) getGistInfoFor:(NSString *) gistId
+           serialNumber:(NSString *) serialNumber
+         completeHandle:(void(^_Nonnull)(ZLOperationResultModel * _Nonnull)) handle {
+    
+    GithubResponse responseBlock = ^(BOOL result, id _Nullable responseObject, NSString * serialNumber) {
+        
+        ZLOperationResultModel * repoResultModel = [[ZLOperationResultModel alloc] init];
+        repoResultModel.result = result;
+        repoResultModel.serialNumber = serialNumber;
+        repoResultModel.data = responseObject;
+        
+        if(handle){
+            ZLMainThreadDispatch( handle(repoResultModel);)
+        }
+    };
+    
+    // 获取gist信息
+    [[ZLGithubHttpClientV2 defaultClient] getGistWithGistId: gistId
+                                               serialNumber:serialNumber
+                                                   response:responseBlock];
     
 }
 

@@ -126,6 +126,8 @@ extension ZLGithubAPISwift {
             return ZLGithubAPISwift.GitHubAPIURL + "/orgs/\(login.urlPathEncoding)/repos"
         case .getOrgInfo(let login):
             return ZLGithubAPISwift.GitHubAPIURL + "/orgs/\(login.urlPathEncoding)"
+        case .getGist(let gistId):
+            return ZLGithubAPISwift.GitHubAPIURL + "/gists/\(gistId.urlPathEncoding)"
         }
     }
 }

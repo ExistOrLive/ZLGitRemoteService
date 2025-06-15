@@ -234,6 +234,8 @@ extension ZLGithubAPISwift {
                                                                 response: response,
                                                                 data: data)
             }))
+        case .getGist:
+            return .object(parseWrapper: ZLGithubAPIObjectTypeWrapper<ZLGithubGistModel>(isArray: false))
         case .getOrgInfo:
             return .object(parseWrapper: ZLGithubAPIObjectTypeWrapper<ZLGithubOrgModel>())
         case .getLanguagesInfoForRepo,.getHtmlURL:

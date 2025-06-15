@@ -25,12 +25,7 @@ enum ZLGithubAPISwift {
     ///    - per_page: pageSize
     case currentUserStarreds(page: Int,
                              per_page: Int)
-    ///  当前用户的Gist列表
-    ///  - Parameters
-    ///    - page: 页号 从 1 开始
-    ///    - per_page: pageSize
-    case currentUserGists(page: Int,
-                          per_page: Int)
+
     /// 用户信息
     ///  - Parameters
     ///    - login: 用户标识
@@ -109,14 +104,7 @@ enum ZLGithubAPISwift {
     case getStarredForUser(login: String,
                            page: Int,
                            per_page: Int)
-    ///  获取某个用户的Gist列表
-    ///  - Parameters
-    ///    - login: 用户标识
-    ///    - page: 页号 从 1 开始
-    ///    - per_page: pageSize
-    case getGistsForUser(login: String,
-                         page: Int,
-                         per_page: Int)
+
     
     ///  某个用户的事件(如果为当前登陆用户则会包含私密事件)
     ///  - Parameters
@@ -428,6 +416,27 @@ enum ZLGithubAPISwift {
     
     /// 获取html API
     case getHtmlURL(api: String)
+    
+    // MARK: Gists
+ 
+    ///  获取gist info
+    case getGist(gistId: String)
+    
+    ///  当前用户的Gist列表
+    ///  - Parameters
+    ///    - page: 页号 从 1 开始
+    ///    - per_page: pageSize
+    case currentUserGists(page: Int,
+                          per_page: Int)
+    
+    ///  获取某个用户的Gist列表
+    ///  - Parameters
+    ///    - login: 用户标识
+    ///    - page: 页号 从 1 开始
+    ///    - per_page: pageSize
+    case getGistsForUser(login: String,
+                         page: Int,
+                         per_page: Int)
     
     
     
